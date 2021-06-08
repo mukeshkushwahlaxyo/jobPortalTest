@@ -34,6 +34,7 @@ class CategoryGroupController extends Controller
     public function index()
     {
         $categoryGrps = $this->categoryGroup->all();
+      
 
         $trashes = $this->categoryGroup->trashOnly();
 

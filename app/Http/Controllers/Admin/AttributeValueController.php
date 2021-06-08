@@ -3,24 +3,28 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\AttributeValue\AttributeValueRepository;
+use App\Repositories\Attribute\AttributeRepository;
+use App\Repositories\Category\CategoryRepository;
 use App\Http\Requests\Validations\CreateAttributeValueRequest;
 use App\Http\Requests\Validations\UpdateAttributeValueRequest;
 
 class AttributeValueController extends Controller
 {
     private $model_name;
-
+    private $category;
+    private $attribute;
     private $attribute_value;
 
     /**
      * construct
      */
-    public function __construct(AttributeValueRepository $attribute_value)
+    public function __construct(AttributeValueRepository $attribute_value,CategoryRepository $category,AttributeRepository $attribute)
     {
         parent::__construct();
 
         $this->model_name = trans('app.model.attribute_value');
-
+        $this->category = $category;
+        $this->attribute = $attribute;  
         $this->attribute_value = $attribute_value;
     }
 
@@ -31,9 +35,10 @@ class AttributeValueController extends Controller
      */
     public function create($id = null)
     {
-        $attribute = $this->attribute_value->create($id);
-
-        return view('admin.attribute-value._create', compact('attribute'));
+        $attribute = $this->attribute_value->allAttribute();
+        $category = $this->category->all();
+        $attributeList = $this->attribute->all();
+        return view('admin.attribute-value._create', compact('attribute','category','attributeList'));
     }
 
     /**
@@ -71,13 +76,16 @@ class AttributeValueController extends Controller
     public function edit($id)
     {
         $attributeValue = $this->attribute_value->find($id);
+        $category = $this->category->all();
 
         $this->authorize('update', $attributeValue);
 
-        $attribute = $this->attribute_value->getAttribute($attributeValue->attribute_id);
+        $attribute = $this->attribute_value->allAttribute();
+        // dd($attribute);
 
-        return view('admin.attribute-value._edit', compact('attributeValue', 'attribute'));
+        return view('admin.attribute-value._edit', compact('attributeValue', 'attribute','category'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -202,5 +210,11 @@ class AttributeValueController extends Controller
         }
 
         return back()->with('success', trans('messages.deleted', ['model' => $this->model_name]));
+    }
+
+    public function getAttributeSublist($id){
+        $sublist = $this->attribute_value->getAttributeSubList($id);
+        return response()->json($sublist);
+
     }
 }

@@ -30,6 +30,7 @@ class Attribute extends BaseModel
                     'name',
                     'attribute_type_id',
                     'order',
+                    'product_type'
                 ];
 
     /**
@@ -53,6 +54,16 @@ class Attribute extends BaseModel
     public function attributeType()
     {
         return $this->belongsTo(AttributeType::class);
+    }
+
+    public function productType()
+    {
+        return $this->belongsTo(ProductType::class,'product_type');
+    }
+
+    public function attributeSublist()
+    {
+        return $this->hasMany(AttributeSublist::class,'attribute_id');
     }
 
     /**
@@ -80,7 +91,7 @@ class Attribute extends BaseModel
      */
     public function scopeMine($query)
     {
-        return $query->where('shop_id', Auth::user()->merchantId());
+        return $query->where('shop_id', Auth::user()->merchantId())->OrwhereNull('shop_id');
     }
 
     /**

@@ -6,4 +6,6 @@ Route::post('attribute/massTrash', 'AttributeController@massTrash')->name('attri
 Route::post('attribute/massDestroy', 'AttributeController@massDestroy')->name('attribute.massDestroy')->middleware('demoCheck');
 Route::delete('attribute/emptyTrash', 'AttributeController@emptyTrash')->name('attribute.emptyTrash');
 Route::post('attribute/reorder', 'AttributeController@reorder')->name('attribute.reorder');
+Route::get('attribute/getAttributeById/{id}/{selected?}','AttributeController@getAttributeTypeByProductId')->name('attribute.getAttributeType');
+Route::post('attribute/removeSublist/','AttributeController@removeSublist')->name('attribute.removeSublist');
 Route::resource('attribute', 'AttributeController', ['except' => ['show']]);

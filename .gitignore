@@ -3,13 +3,14 @@
 /public/storage
 /public/images/demo
 /public/sitemap.xml
+/app/Http/Controllers/Installer/ActivateController.php
 /storage/*.key
 /storage/*.index
 /storage/installed
 /storage/logs/**
 /storage/app/analytics-api.json
 /vendor/**
-!/vendor/helper_functions.php
+/vendor/helper_functions.php
 /.idea
 /.vagrant
 .sass-cache/

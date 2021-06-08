@@ -28,6 +28,7 @@ class UpdateAttributeRequest extends Request
 
         return [
            'attribute_type_id' => 'required',
+           'product_type'=>'required',
            'name' => 'bail|required|composite_unique:attributes,shop_id:'.$shop_id.', '.$ignore,
            'order' => 'integer|nullable'
         ];

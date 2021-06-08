@@ -28,7 +28,13 @@ class CreateAttributeValueRequest extends Request
 
         return [
            'attribute_id' => 'required',
+           'category_id' => 'required',
            'value' => 'required',
+           'price'=>'nullable',
+           'quantity'=>'nullable',
+           'quality'=>'nullable',
+           'status'=>'nullable',
+           'description'=>'nullable',
            'image' => 'mimes:jpg,jpeg,png',
         ];
     }

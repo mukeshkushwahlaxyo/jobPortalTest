@@ -8,9 +8,10 @@
 			@can('create', App\AttributeValue::class)
 				<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attributeValue.create') }}" class="ajax-modal-btn btn btn-new btn-flat">{{ trans('app.add_attribute_value') }} </a>
 			@endcan
+			
 			@can('create', App\Attribute::class)
 				<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attribute.create') }}" class="ajax-modal-btn btn btn-new btn-flat">{{ trans('app.add_attribute') }} </a>
-			@endcan
+			@endcan	
 	      </div>
 	    </div> <!-- /.box-header -->
 	    <div class="box-body">
@@ -38,6 +39,7 @@
 			        <th width="7px">{{ trans('app.#') }}</th>
 					<th>{{ trans('app.position') }}</th>
 					<th>{{ trans('app.name') }}</th>
+					<th>{{ trans('Product Type') }}</th>
 					<th>{{ trans('app.type') }}</th>
 					<th>{{ trans('app.entities') }}</th>
 					<th>{{ trans('app.option') }}</th>
@@ -60,6 +62,7 @@
 								{{ $attribute->name }}
 							@endcan
 						</td>
+						<td>{{ $attribute->productType->name }}</td>
 						<td>{{ $attribute->attributeType->type }}</td>
 						<td>
 							<span class="label label-default">{{ $attribute->attribute_values_count }}</span>

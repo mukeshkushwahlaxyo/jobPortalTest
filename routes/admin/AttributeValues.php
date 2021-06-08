@@ -6,4 +6,5 @@ Route::post('attributeValue/massTrash', 'AttributeValueController@massTrash')->n
 Route::post('attributeValue/massDestroy', 'AttributeValueController@massDestroy')->name('attributeValue.massDestroy')->middleware('demoCheck');
 Route::delete('attributeValue/emptyTrash', 'AttributeValueController@emptyTrash')->name('attributeValue.emptyTrash');
 Route::post('attributeValue/reorder', 'AttributeValueController@reorder')->name('attributeValue.reorder');
+Route::get('attributeValue/sublist/{id}', 'AttributeValueController@getAttributeSublist')->name('attributeValue.getAttributeSublist');
 Route::resource('attributeValue', 'AttributeValueController', ['except' => ['index', 'create']]);

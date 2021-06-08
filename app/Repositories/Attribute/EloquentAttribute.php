@@ -4,6 +4,10 @@ namespace App\Repositories\Attribute;
 
 use Auth;
 use App\Attribute;
+use App\AttributeType;
+use App\AttributeValue;
+use App\AttributeSublist;
+use App\ProductType;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
 
@@ -18,12 +22,14 @@ class EloquentAttribute extends EloquentRepository implements BaseRepository, At
 
 	public function all()
 	{
+        // dd(Auth::user()->isFromPlatform());
         if (! Auth::user()->isFromPlatform()) {
-            return $this->model->mine()->with('attributeType')->withCount('attributeValues')->get();
+            return $this->model->mine()->with(['attributeType','productType'])->withCount('attributeValues')->get();
         }
 
-        return $this->model->with('attributeType')->withCount('attributeValues')->get();
+        return $this->model->with(['attributeType','productType'])->withCount('attributeValues')->get();
 	}
+
 
 	public function trashOnly()
 	{
@@ -37,10 +43,22 @@ class EloquentAttribute extends EloquentRepository implements BaseRepository, At
     public function entities($id)
     {
         $entities['attribute'] = parent::find($id);
+        // dd(parent::find($id)->attributeValues()->get());
 
-        $entities['attributeValues'] = $entities['attribute']->attributeValues()->with('image')->get();
+        $entities['attributeValues'] = $entities['attribute']->attributeValues()->with(['image','getShopName.owner'])->get();
 
         $entities['trashes'] = $entities['attribute']->attributeValues()->onlyTrashed()->get();
+
+        $updated_id =  AttributeValue::select('updated_id')
+                        ->where('shop_id', Auth::user()->shop_id)
+                        ->where('updated_id','!=',null)
+                        ->get();
+        $ids=[];                
+        foreach($updated_id as $Id){
+            $ids[] = $Id->updated_id; 
+        }    
+
+        $entities['updated_id'] =$ids;             
 
         return $entities;
     }
@@ -72,5 +90,45 @@ class EloquentAttribute extends EloquentRepository implements BaseRepository, At
         }
 
         return $attribute->forceDelete();
+    }
+
+    public function getProductType(){
+        return ProductType::all();
+    }
+
+    public function getAttributeType($id){
+        return AttributeType::where('product_type_id',$id)->get();
+    }
+
+    public function saveDataOfSublist($data,$attributeId){
+            // dd($attributeId);
+        foreach ($data as $key => $value) {
+            $sublist = [
+                'attribute_id'=> $attributeId,
+                 'name'=> $value  
+            ];
+            AttributeSublist::create($sublist);
+        }
+    }
+
+    public function find($id){
+        $edittable = Attribute::with(['attributeSublist'])->find($id);
+        return $edittable;
+    }
+
+    public function deleteSublist($id){
+        $edittable = AttributeSublist::destroy($id);      
+    }
+
+    public function deleteSublistForAttribute($id){
+        AttributeSublist::where('attribute_id',$id)->delete();
+    }
+
+
+    public function getMarchentUpdatedId(){
+        return AttributeValue::select('updated_id')
+                           ->where('shop_id', Auth::user()->shop_id)
+                           ->where('updated_id','!=',null)
+                           ->get();
     }
 }

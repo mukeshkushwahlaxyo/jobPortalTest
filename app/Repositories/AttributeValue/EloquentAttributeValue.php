@@ -4,9 +4,13 @@ namespace App\Repositories\AttributeValue;
 
 use App\Attribute;
 use App\AttributeValue;
+use App\AttributeSublist;
+use App\Category;
 use Illuminate\Http\Request;
+// use App\Http\Requests\Request;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
+use Auth;
 
 class EloquentAttributeValue extends EloquentRepository implements BaseRepository, AttributeValueRepository
 {
@@ -24,6 +28,7 @@ class EloquentAttributeValue extends EloquentRepository implements BaseRepositor
 
     public function store(Request $request)
     {
+        // dd(parent::all());
         $attribute = parent::store($request);
 
        if ($request->hasFile('image')) {
@@ -35,7 +40,16 @@ class EloquentAttributeValue extends EloquentRepository implements BaseRepositor
 
    public function update(Request $request, $id)
     {
-        $attribute = parent::update($request, $id);
+        $isUpdate = AttributeValue::find($id);
+        if(Auth::user()->role->name === 'Merchant' && $isUpdate->shop_id == null){
+            $data = $request->all();
+            $data['updated_id'] = $id;
+            $data['shop_id'] = Auth::user()->shop_id;
+            $attribute = AttributeValue::create($data);
+        }
+        else{
+            $attribute = parent::update($request, $id);    
+        }
 
         if ($request->hasFile('image') || ($request->input('delete_image') == 1)) {
             $attribute->deleteImage();
@@ -92,4 +106,19 @@ class EloquentAttributeValue extends EloquentRepository implements BaseRepositor
 
         return true;
     }
+
+    public function getAllAttributeList(){
+        return Attribute::all();
+    }
+
+    public function getAttributeSubList($attributeId){
+        $data['sublist'] = AttributeSublist::where('attribute_id',$attributeId)->get();
+        $data['isCustom'] = Attribute::find($attributeId);
+        return ($data); 
+    }
+
+    public function allAttribute(){
+        return Attribute::all();
+    }
+
 }

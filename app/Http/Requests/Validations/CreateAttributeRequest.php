@@ -28,6 +28,8 @@ class CreateAttributeRequest extends Request
 
         return [
            'attribute_type_id' => 'required',
+           'product_type' => 'required',
+           // 'sublist_items' => 'required',
            'name' => 'bail|required|composite_unique:attributes,shop_id:'.$shop_id,
            'order' => 'integer|nullable'
         ];
@@ -42,6 +44,7 @@ class CreateAttributeRequest extends Request
     {
         return [
             'attribute_type_id.required' => trans('validation.attribute_type_id_required'),
+            // 'sublist_items.required'=> trans('validation.attribute_type_id_required')
         ];
     }
 }

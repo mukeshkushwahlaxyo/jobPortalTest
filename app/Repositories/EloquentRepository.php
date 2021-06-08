@@ -39,6 +39,7 @@ abstract class EloquentRepository
 
     public function store(Request $request)
     {
+    	
         $model = $this->model->create($request->all());
 
         if ($request->hasFile('images')) {

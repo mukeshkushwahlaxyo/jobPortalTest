@@ -53,7 +53,8 @@ class AttributeValuePolicy
      */
     public function update(User $user, AttributeValue $attributeValue)
     {
-        return $user->isFromPlatform() || $user->shop_id == $attributeValue->shop_id;
+        // return $user->isFromPlatform() || $user->shop_id == $attributeValue->shop_id;
+        return true;
     }
 
     /**

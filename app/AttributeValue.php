@@ -25,8 +25,16 @@ class AttributeValue extends BaseModel
     protected $fillable = [
                     'shop_id',
                     'value',
+                    'price',
+                    'quality',
+                    'quantity',
+                    'status',
+                    'description',
                     'color',
                     'attribute_id',
+                    'category_id',
+                    'updated_id',
+                    'attribute_sublist_id',
                     'order',
                 ];
 
@@ -62,5 +70,9 @@ class AttributeValue extends BaseModel
     public function scopeMine($query)
     {
         return $query->where('shop_id', Auth::user()->merchantId());
+    }
+
+    public function getShopName(){
+        return $this->belongsTo(Shop::class,'shop_id');
     }
 }

@@ -1,6 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('content')
+	
 	<div class="box">
 	    <div class="box-header with-border">
 	      <h3 class="box-title">{{ trans('app.attribute') . ': ' . $attribute->name . ' | ' . trans('app.type') . ': ' . $attribute->attributeType->type }}</h3>
@@ -34,48 +35,70 @@
 					@endcan
 			        <th width="7px">{{ trans('app.#') }}</th>
 			        <th>{{ trans('app.position') }}</th>
+			        @if(Auth::user()->role->name =='Super Admin')
+			        	<th>{{ trans('Created Or Updated By') }}</th>
+			        @endif	
 			        <th>{{ trans('app.values') }}</th>
 			        <th>{{ trans('app.color') }}</th>
 			        <th>{{ trans('app.pattern') }}</th>
+			        @if(Auth::user()->role->name =='Merchant')
+			       		<th>{{ trans('Price') }}</th>
+				        <th>{{ trans('Quantity') }}</th>
+				        <th>{{ trans('Quality') }}</th>
+				        <th>{{ trans('Statue') }}</th>
+			        @endif
 			        <th>{{ trans('app.option') }}</th>
 		        </tr>
 	        </thead>
 	        <tbody id="massSelectArea">
 		        @foreach($attributeValues as $attributeValue )
-			        <tr id="{{ $attributeValue->id }}">
-					  	@can('massDelete', App\AttributeValue::class)
-							<td><input id="{{ $attributeValue->id }}" type="checkbox" class="massCheck"></td>
-					  	@endcan
-			        	<td>
-							<i data-toggle="tooltip" data-placement="top" title="{{ trans('app.move') }}" class="fa fa-arrows sort-handler"></i>
-			        	</td>
-						<td><span class="order"> {{ $attributeValue->order }} </span></td>
-						<td>{{ $attributeValue->value }}</td>
-						<td>
-							@if($attributeValue->color)
-								<i class="fa fa-square" style="color: {{ $attributeValue->color }}"></i>
-							  	{{ $attributeValue->color }}
-							@endif
-						</td>
-						<td>
-					 	  	@if($attributeValue->image)
-								<img src="{{ get_storage_file_url($attributeValue->image->path, 'tiny') }}" class="img-sm" alt="{{ trans('app.image') }}">
-							@endif
-						</td>
-						<td class="row-options">
-							@can('view', $attributeValue)
-								<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attributeValue.show', ['id' => $attributeValue->id]) }}"  class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.detail') }}" class="fa fa-expand"></i></a>&nbsp;
-							@endcan
-							@can('update', $attributeValue)
-								<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attributeValue.edit', ['id' => $attributeValue->id]) }}"  class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}" class="fa fa-edit"></i></a>&nbsp;
-							@endcan
-							@can('delete', $attributeValue)
-								{!! Form::open(['route' => ['admin.catalog.attributeValue.trash', $attributeValue->id], 'method' => 'delete', 'class' => 'data-form']) !!}
-								    {!! Form::button('<i class="fa fa-trash-o"></i>', ['type' => 'submit', 'class' => 'confirm ajax-silent', 'title' => trans('app.trash'), 'data-toggle' => 'tooltip', 'data-placement' => 'top']) !!}
-								{!! Form::close() !!}
-							@endcan
-						</td>
-			        </tr>
+		        		@if(!in_array($attributeValue->id,$updated_id))
+					        <tr id="{{ $attributeValue->id }}">
+							  	@can('massDelete', App\AttributeValue::class)
+									<td><input id="{{ $attributeValue->id }}" type="checkbox" class="massCheck"></td>
+							  	@endcan
+					        	<td>
+									<i data-toggle="tooltip" data-placement="top" title="{{ trans('app.move') }}" class="fa fa-arrows sort-handler"></i>
+					        	</td>
+								<td><span class="order"> {{ $attributeValue->order }} </span></td>
+								@if(Auth::user()->role->name =='Super Admin')
+									<td>{{ $attributeValue->getShopName != null ? $attributeValue->getShopName->owner->name:'Super Admin' }}</td>
+								@endif	
+
+								<td>{{ $attributeValue->value }}</td>
+								<td>
+									@if($attributeValue->color)
+										<i class="fa fa-square" style="color: {{ $attributeValue->color }}"></i>
+									  	{{ $attributeValue->color }}
+									@endif
+								</td>
+								<td>
+							 	  	@if($attributeValue->image)
+										<img src="{{ get_storage_file_url($attributeValue->image->path, 'tiny') }}" class="img-sm" alt="{{ trans('app.image') }}">
+									@endif
+								</td>
+								@if(Auth::user()->role->name =='Merchant')
+						       		<td>{{ $attributeValue->price }}</td>
+							        <td>{{ $attributeValue->quantity }}</td>
+							        <td>{{ $attributeValue->quality }}</td>
+							        <td>{{ $attributeValue->status === 0 ? 'Inactive':'Active' }}</td>
+						        @endif
+								<td class="row-options">
+									@can('view', $attributeValue)
+										<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attributeValue.show', ['id' => $attributeValue->id]) }}"  class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.detail') }}" class="fa fa-expand"></i></a>&nbsp;
+									@endcan
+									
+									@can('update', $attributeValue)
+										<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attributeValue.edit', ['id' => $attributeValue->id]) }}"  class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}" class="fa fa-edit"></i></a>&nbsp;
+									@endcan
+									@can('delete', $attributeValue)
+										{!! Form::open(['route' => ['admin.catalog.attributeValue.trash', $attributeValue->id], 'method' => 'delete', 'class' => 'data-form']) !!}
+										    {!! Form::button('<i class="fa fa-trash-o"></i>', ['type' => 'submit', 'class' => 'confirm ajax-silent', 'title' => trans('app.trash'), 'data-toggle' => 'tooltip', 'data-placement' => 'top']) !!}
+										{!! Form::close() !!}
+									@endcan
+								</td>
+					        </tr>
+					    @endif    
 		        @endforeach
 	        </tbody>
 	      </table>

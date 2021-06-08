@@ -37,7 +37,7 @@ class AttributeController extends Controller
     public function index()
     {
         $attributes = $this->attribute->all();
-
+        // dd($attributes);
         $trashes = $this->attribute->trashOnly();
 
         return view('admin.attribute.index', compact('attributes', 'trashes'));
@@ -50,7 +50,9 @@ class AttributeController extends Controller
      */
     public function create()
     {
-        return view('admin.attribute._create');
+        $productType = $this->attribute->getProductType();
+
+        return view('admin.attribute._create',compact('productType'));
     }
 
     /**
@@ -61,8 +63,12 @@ class AttributeController extends Controller
      */
     public function store(CreateAttributeRequest $request)
     {
-        $this->attribute->store($request);
-
+        $data = $request->all();
+        $sublist_items = $data['sublist_items'];
+        $createdRecord = $this->attribute->store($request);
+        if($sublist_items[0] !=null){
+            $this->attribute->saveDataOfSublist($sublist_items,$createdRecord->id);     
+        };
         return back()->with('success', trans('messages.created', ['model' => $this->model_name]));
     }
 
@@ -75,7 +81,6 @@ class AttributeController extends Controller
     public function entities($id)
     {
         $entities = $this->attribute->entities($id);
-
         return view('admin.attribute.entities', $entities);
     }
 
@@ -89,7 +94,16 @@ class AttributeController extends Controller
     {
         $attribute = $this->attribute->find($id);
 
-        return view('admin.attribute._edit', compact('attribute'));
+        $productType = $this->attribute->getProductType();
+        // dd($attribute);
+
+        return view('admin.attribute._edit', compact('attribute','productType'));
+    }
+
+    public function removeSublist(Request $request){
+        
+        $this->attribute->deleteSublist($request->id);
+        return 'true';        
     }
 
     /**
@@ -101,7 +115,11 @@ class AttributeController extends Controller
      */
     public function update(UpdateAttributeRequest $request, $id)
     {
+        $data = $request->all();
+        $sublist_items = $data['sublist_items'];
         $this->attribute->update($request, $id);
+        $this->attribute->deleteSublistForAttribute($id);
+        $this->attribute->saveDataOfSublist($sublist_items,$id);
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }
@@ -222,5 +240,15 @@ class AttributeController extends Controller
         }
 
         return response('Not found!', 404);
+    }
+
+    public function getAttributeTypeByProductId($id,$selected=''){
+        $list = $this->attribute->getAttributeType($id); ?>
+
+        <option <?php $selected ==='' ? 'selected="selected"':'' ?>  value="">Select</option>
+       <?php foreach($list as $List){ ?>
+           <option <?php if($selected == $List->id){ echo 'selected="selected"'; } ?> class="attribute_type_id_opt" data-name="<?php echo $List->type; ?>" value="<?php echo $List->id; ?>"><?php echo $List->type; ?></option> 
+        <?php 
+        }
     }
 }
