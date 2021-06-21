@@ -11,7 +11,9 @@ use App\Http\Requests\Validations\ProductSearchRequest;
 use App\Http\Requests\Validations\CreateInventoryRequest;
 use App\Http\Requests\Validations\UpdateInventoryRequest;
 use App\Http\Requests\Validations\CreateInventoryWithVariantRequest;
+use App\InventoryCustomise;
 use Yajra\DataTables\DataTables;
+use Session;
 
 class InventoryController extends Controller
 {
@@ -41,9 +43,8 @@ class InventoryController extends Controller
     public function index()
     {
         //$inventories = $this->inventory->all();
-
+        Session::put('onForm',false);
         $trashes = $this->inventory->trashOnly();
-
         return view('admin.inventory.index', compact('trashes'));
     }
 
@@ -64,6 +65,8 @@ class InventoryController extends Controller
      */
     public function add(AddInventoryRequest $request, $id)
     {
+        Session::put('onForm',false);
+         Session::remove('invoiceId');
         if (! $request->user()->shop->canAddMoreInventory()) {
             return redirect()->route('admin.stock.inventory.index')
             ->with('error', trans('messages.cant_add_more_inventory'));
@@ -77,17 +80,17 @@ class InventoryController extends Controller
         }
 
         $product = $this->inventory->findProduct($id);
+        $attributesCustom = $this->inventory->getAllAttribute(2);
+        // dd($attributesCustom);
 
-        return view('admin.inventory.create', compact('product'));
+        return view('admin.inventory.create', compact('product','attributesCustom'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function addWithVariant(AddInventoryRequest $request, $id)
+    public function addWithVariant(AddInventoryRequest $request)
     {
+        
+        $id = $request->product_id;
+        Session::put('onForm',true);
         if (! $request->user()->shop->canAddMoreInventory()) {
             return redirect()->route('admin.stock.inventory.index')
             ->with('error', trans('messages.cant_add_more_inventory'));
@@ -100,8 +103,13 @@ class InventoryController extends Controller
         $attributes = $this->inventory->getAttributeList(array_keys($variants));
 
         $product = $this->inventory->findProduct($id);
+        $variantUpdate = $this->inventory->getVariants(session('invoiceId'));
 
-        return view('admin.inventory.createWithVariant', compact('combinations', 'attributes', 'product'));
+        if(count($combinations[0]) ===  0 ){
+            return '';
+        }
+      
+        return view('admin.inventory.createWithVariant', compact('combinations', 'attributes', 'product','variantUpdate'));
     }
 
     /**
@@ -112,9 +120,13 @@ class InventoryController extends Controller
      */
     public function store(CreateInventoryRequest $request)
     {
+      
         $this->authorize('create', \App\Inventory::class); // Check permission
 
         $inventory = $this->inventory->store($request);
+         Session::put('inventry_id',$inventory->id);
+        // dd($inventory);
+        Session::put('invoiceId',$inventory->id);
 
         $request->session()->flash('success', trans('messages.created', ['model' => $this->model]));
 
@@ -129,10 +141,10 @@ class InventoryController extends Controller
      */
     public function storeWithVariant(CreateInventoryWithVariantRequest $request)
     {
+        // dd($request); 
         $this->inventory->storeWithVariant($request);
 
-        return redirect()->route('admin.stock.inventory.index')
-        ->with('success', trans('messages.created', ['model' => $this->model]));
+        return redirect()->back()->with('success', trans('messages.created', ['model' => $this->model]));
     }
 
     /**
@@ -156,13 +168,15 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
+        //this is inventoryid
+        Session::put('invoiceId',$id);
         $inventory = $this->inventory->find($id);
-
         $product = $this->inventory->findProduct($inventory->product_id);
-
+      
         $preview = $inventory->previewImages();
+        $attributesCustom = $this->inventory->getAllAttribute(2);
 
-        return view('admin.inventory.edit', compact('inventory', 'product', 'preview'));
+        return view('admin.inventory.edit', compact('inventory', 'product','attributesCustom' ,'preview'));
     }
 
     /**
@@ -189,6 +203,7 @@ class InventoryController extends Controller
      */
     public function update(UpdateInventoryRequest $request, $id)
     {
+        // return $request->textile;
         $inventory = $this->inventory->update($request, $id);
 
         // For inspectable
@@ -197,6 +212,7 @@ class InventoryController extends Controller
         }
 
         $request->session()->flash('success', trans('messages.updated', ['model' => $this->model]));
+        Session::put('invoiceId',$id);
 
         return response()->json($this->getJsonParams($inventory));
     }
@@ -322,7 +338,7 @@ class InventoryController extends Controller
         return [
             'id' => $inventory->id,
             'model' => 'inventory',
-            'redirect' => route($route)
+            'redirect' => 'false'//route($route)
         ];
     }
 
@@ -358,6 +374,73 @@ class InventoryController extends Controller
             })
             ->rawColumns(['image', 'sku', 'title', 'condition', 'price', 'quantity', 'checkbox', 'option'])
             ->make(true);
+    }
+
+    public function getAttributeValue(Request $request){
+    
+        $attributeCategory = $this->inventory->findProduct($request->product_id);
+        $attribute = [];
+        $attributeValue = [];     
+        foreach($request->attributeId as $attributeId){
+            $array = explode(",",$attributeId);
+            $attrID = $array[0];
+            $attrValueID = isset($array[1]) ? $array[1] : '';
+            $attributeValue[] = $this->inventory->getAttributeValues($attrID,$attrValueID);
+            $attribute[] = $this->inventory->getAttributeAndSublist($attrID,$attrValueID);
+        }
+        return view('admin.inventory._showCustomiseOptions',compact('attributeValue','attributeCategory','attribute'));
+    }
+
+    public function saveCustomiseInventryDetail(Request $request){
+        $requestData = $request->all();
+        $this->inventory->InventoryInCustomise(session('invoiceId'));
+        $check = false;
+       foreach($requestData as $attrAndSublist => $cateId){
+            foreach($cateId as $CateID){
+                $ids = explode(',', $attrAndSublist);
+                $attrID = $ids[0];
+                $attrSublistID = isset($ids[1]) ? $ids[1]:'';
+                $categoryId = $CateID;
+            
+                $values = 'vall_'.$attrID.''.$attrSublistID.''.$CateID;
+             
+                if(isset($requestData[$values])){
+                    foreach($requestData[$values] as $values){
+                        $customise['attrValue_id'] = $values;
+                        $customise['inventories_id'] = session('invoiceId');
+                        $customise['category_id'] = $categoryId;
+                        $customise['attribute_id'] = $attrID;
+                        $customise['attributeSublist_id'] = $attrSublistID === '' ? null : $attrSublistID;
+                        $check = $this->inventory->saveCutomiseInentryData($customise);
+                    }
+                }
+            }
+       }
+       if($check){
+        return 'Data Save Successfully...';
+       }
+       else{
+        return 'Please Try Again...';
+        }
+    }
+
+    public function getValuesOfCategory(Request $request){
+        $id = $request->catId;
+        $ids = $request->ids;
+        $attrID = $request->attrID;
+        $attrSublistID = $request->attrSublistID;
+        $selectedalueIds = [];
+       
+        $attributeValue =$this->inventory->getValuesOfCategory($id);
+        $selectedValue =$this->inventory->getSelectedValue($attrID,$attrSublistID);
+        foreach($selectedValue as $values){
+            $selectedalueIds[]  = $values->attrValue_id;      
+        }
+        // dd(count($attributeValue));
+       if(count($attributeValue)===0 ){
+           return false;
+       }
+        return view('admin.inventory._attributeValueList',compact('attributeValue','ids','selectedalueIds'));
     }
 
 }

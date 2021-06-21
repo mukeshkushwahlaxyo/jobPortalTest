@@ -1,11 +1,12 @@
-@extends('admin.layouts.master')
+{{-- @extends('admin.layouts.master')
 
 @section('content')
-    @can('view', $product)
-        @include('admin.partials._product_widget')
-    @endcan
 
-    <div class="box">
+    @can('view', $product)
+        {{-- @include('admin.partials._product_widget') --}}
+    {{-- @endcan --}}
+
+   {{--  <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">
                 {{ trans('app.add_inventory') }}
@@ -14,17 +15,19 @@
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
             </div>
-        </div> <!-- /.box-header -->
+        </div> <!-- /.box-header --> --}}
         <div class="box-body">
-            {!! Form::open(['route' => 'admin.stock.inventory.storeWithVariant', 'files' => true, 'id' => 'form', 'data-toggle' => 'validator']) !!}
+            {{-- {!! Form::open(['route' => 'admin.stock.inventory.storeWithVariant', 'files' => true, 'id' => 'form', 'data-toggle' => 'validator']) !!} --}}
 
                 @include('admin.inventory._formWithVariant')
+                <input type="hidden" name="product" value="{{json_encode($product)}}">
+                <input type="hidden" name="inventry_id" value="{{session('invoiceId')}}">
 
                 {!! Form::submit(trans('app.form.save'), ['class' => 'btn btn-flat btn-lg btn-new pull-right']) !!}
-            {!! Form::close() !!}
+            {{-- {!! Form::close() !!} --}}
         </div> <!-- /.box-body -->
-    </div> <!-- /.box -->
-@endsection
+    {{-- </div> <!-- /.box --> --}}
+{{-- @endsection --}}
 
 @section('page-script')
     @include('plugins.dynamic-inputs')

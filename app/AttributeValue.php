@@ -53,6 +53,11 @@ class AttributeValue extends BaseModel
         return $this->belongsTo(Attribute::class);
     }
 
+    public function attributeSublist()
+    {
+        return $this->belongsTo(AttributeSublist::class,'attribute_sublist_id','id');
+    }
+
     /**
      * Get the inventories for the supplier.
      */
@@ -74,5 +79,9 @@ class AttributeValue extends BaseModel
 
     public function getShopName(){
         return $this->belongsTo(Shop::class,'shop_id');
+    }
+
+    public function getCategoryName(){
+        return $this->belongsTo(Category::class,'category_id');
     }
 }

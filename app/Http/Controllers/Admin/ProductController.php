@@ -94,6 +94,7 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
+        // dd($request);
         $this->authorize('create', \App\Product::class); // Check permission
 
         $product = $this->product->store($request);
@@ -144,6 +145,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, $id)
     {
+        // dd($request);
         $product = $this->product->update($request, $id);
 
         $this->authorize('update', $product); // Check permission

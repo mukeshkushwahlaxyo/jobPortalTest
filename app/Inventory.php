@@ -78,6 +78,7 @@ class Inventory extends BaseModel
                         'stock_quantity',
                         'damaged_quantity',
                         'user_id',
+                        'textile',
                         'purchase_price',
                         'sale_price',
                         'offer_price',
@@ -123,6 +124,14 @@ class Inventory extends BaseModel
         // $array['product'] = $this->product;
 
         return $array;
+    }
+
+    public function getVariant(){
+        return $this->hasMany(InventoryVariant::class,'inventroy_id','id');
+    }
+
+    public function getCustomise(){
+        return $this->hasMany(InventoryCustomise::class,'inventories_id','id');
     }
 
     /**

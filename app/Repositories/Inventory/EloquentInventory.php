@@ -5,6 +5,9 @@ namespace App\Repositories\Inventory;
 use Auth;
 use App\Product;
 use App\Inventory;
+use App\InventoryVariant;
+use App\InventoryVariantAttribute;
+use App\InventoryCustomise;
 use App\Attribute;
 use App\AttributeValue;
 use Illuminate\Support\Str;
@@ -80,55 +83,61 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         return $inventory;
     }
 
+    public function find($id){
+        return Inventory::with(['getCustomise.attributeSublist','getCustomise.attribute','getVariant'])->find($id);
+    }
+
     public function storeWithVariant(Request $request)
-    {
+    {   
         $product = json_decode($request->input('product'));
+        // dd($request->all());
 
-        // Common informations
-        $commonInfo['user_id'] = $request->user()->id; //Set user_id
+        // // Common informations
+        // $commonInfo['user_id'] = $request->user()->id; //Set user_id
 
-        $commonInfo['shop_id'] = $request->user()->merchantId(); //Set shop_id
+        // $commonInfo['shop_id'] = $request->user()->merchantId(); //Set shop_id
 
-        $commonInfo['title'] = $request->has('title') ? $request->input('title') : $product->name;
+        // $commonInfo['title'] = $request->has('title') ? $request->input('title') : $product->name;
 
-        $commonInfo['product_id'] = $product->id;
+        // $commonInfo['product_id'] = $product->id;
 
-        $commonInfo['brand'] = $product->brand;
+        // $commonInfo['brand'] = $product->brand;
 
-        $commonInfo['warehouse_id'] = $request->input('warehouse_id');
+        // $commonInfo['warehouse_id'] = $request->input('warehouse_id');
 
-        $commonInfo['supplier_id'] = $request->input('supplier_id');
+        // $commonInfo['supplier_id'] = $request->input('supplier_id');
 
-        $commonInfo['shipping_width'] = $request->input('shipping_width');
+        // $commonInfo['shipping_width'] = $request->input('shipping_width');
 
-        $commonInfo['shipping_height'] = $request->input('shipping_height');
+        // $commonInfo['shipping_height'] = $request->input('shipping_height');
 
-        $commonInfo['shipping_depth'] = $request->input('shipping_depth');
+        // $commonInfo['shipping_depth'] = $request->input('shipping_depth');
 
-        $commonInfo['shipping_weight'] = $request->input('shipping_weight');
+        // $commonInfo['shipping_weight'] = $request->input('shipping_weight');
 
-        $commonInfo['available_from'] = $request->input('available_from');
+        // $commonInfo['available_from'] = $request->input('available_from');
 
-        $commonInfo['active'] = $request->input('active');
+        // $commonInfo['active'] = $request->input('active');
 
-        $commonInfo['tax_id'] = $request->input('tax_id');
+        // $commonInfo['tax_id'] = $request->input('tax_id');
 
-        $commonInfo['min_order_quantity'] = $request->input('min_order_quantity');
+        // $commonInfo['textile'] = $request->input('textile');
 
-        $commonInfo['alert_quantity'] = $request->input('alert_quantity');
+        // $commonInfo['min_order_quantity'] = $request->input('min_order_quantity');
 
-        $commonInfo['description'] = $request->input('description');
+        // $commonInfo['alert_quantity'] = $request->input('alert_quantity');
 
-        $commonInfo['condition_note'] = $request->input('condition_note');
+        // $commonInfo['description'] = $request->input('description');
 
-        $commonInfo['key_features'] = $request->input('key_features');
+        // $commonInfo['condition_note'] = $request->input('condition_note');
 
-        $commonInfo['linked_items'] = $request->input('linked_items');
+        // $commonInfo['key_features'] = $request->input('key_features');
 
-        $commonInfo['meta_title'] = $request->input('meta_title');
+        // $commonInfo['linked_items'] = $request->input('linked_items');
 
-        $commonInfo['meta_description'] = $request->input('meta_description');
+        // $commonInfo['meta_title'] = $request->input('meta_title');
 
+        // $commonInfo['meta_description'] = $request->input('meta_description');
         // Arrays
         $skus = $request->input('sku');
 
@@ -156,6 +165,14 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         foreach ($skus as $key => $sku) {
             $dynamicInfo['sku'] = $skus[$key];
 
+            $dynamicInfo['product_id'] = $product->id;
+
+            $dynamicInfo['shop_id'] = $request->input('shop_id');
+
+            $dynamicInfo['user_id'] = $request->input('user_id');
+
+            $dynamicInfo['inventroy_id'] = $request->input('inventry_id');
+
             $dynamicInfo['condition'] = $conditions[$key];
 
             $dynamicInfo['stock_quantity'] = $stock_quantities[$key];
@@ -170,17 +187,18 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
 
             $dynamicInfo['offer_end'] = ($offer_prices[$key]) ? $request->input('offer_end') : NULL ;
 
-            $dynamicInfo['slug'] = Str::slug($request->input('slug') . ' ' . $sku, '-');
+            // $dynamicInfo['slug'] = Str::slug($request->input('slug') . ' ' . $sku, '-');
 
             // Merge the common info and dynamic info to data array
-            $data = array_merge($dynamicInfo, $commonInfo);
+            // $data = array_merge($dynamicInfo, $commonInfo);
 
             // Insert the record
-            $inventory = Inventory::create($data);
+            $inventory = InventoryVariant::create($dynamicInfo);
 
+        // dd($inventory);
             // Sync Attributes
             if ($variants[$key]) {
-                $this->setAttributes($inventory, $variants[$key]);
+                $this->saveVariants($variants[$key],$inventory->id);
             }
 
             // Sync packaging
@@ -200,6 +218,16 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         }
 
         return true;
+    }
+
+    public function saveVariants($variants,$inventryId){
+        foreach($variants as $key => $Variants){
+            // dd($Variants);
+            $variantsData['attribute_id'] = $key;
+            $variantsData['attributeValue_id'] = $Variants;
+            $variantsData['variant_id'] = $inventryId;
+            InventoryVariantAttribute::create($variantsData);
+        }            
     }
 
     public function updateQtt(Request $request, $id)
@@ -271,7 +299,9 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
 
     public function findProduct($id)
     {
-        return Product::findOrFail($id);
+        return Product::with(['categories'=>function($query){
+             $query->select('id','name');
+        }])->findOrFail($id);
     }
 
     /**
@@ -287,9 +317,9 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         foreach ($attributes as $attribute_id => $attribute_value_id) {
             $temp[$attribute_id] = ['attribute_value_id' => $attribute_value_id];
         }
-
         if (! empty($temp)) {
             $inventory->attributes()->sync($temp);
+        
         }
 
         return true;
@@ -309,6 +339,8 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
     public function confirmAttributes($attributeWithValues)
     {
         $results = array();
+        // dd($attributeWithValues);
+        unset($attributeWithValues['product_id']);
 
         foreach ($attributeWithValues as $attribute => $values) {
             foreach ($values as $value) {
@@ -331,5 +363,70 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         }
 
         return $results;
+    }
+
+    public function getAllAttribute($id=''){
+
+        if($id !=''){
+            return Attribute::with(['attributeValues','attributeSublist'])->where('product_type',$id)->get();
+        }
+        return Attribute::with(['attributeValues','attributeSublist'])->get();
+    }
+
+    public function getAttributeValues($attrID,$attrValurID=''){
+        // dd($attrID);
+        $attrValue = AttributeValue::with('image')->where('shop_id',Auth::user()->shop_id);
+
+        if($attrValurID !=''){
+            $attrValue->where('attribute_sublist_id',$attrValurID);
+        }
+
+        $result = $attrValue->where('attribute_id',$attrID)->get();
+        return $result;
+    }
+
+    public function getAttributeAndSublist($attrID,$attrValurID=''){
+        // dd($attrID);
+        $attrValue = AttributeValue::with(['attribute','attributeSublist'])->select('attribute_id','attribute_sublist_id')->where('shop_id',Auth::user()->shop_id);
+
+        if($attrValurID !=''){
+            $attrValue->where('attribute_sublist_id',$attrValurID);
+        }
+
+        $result = $attrValue->where('attribute_id',$attrID)->groupBy('attribute_id')->get();
+        return $result;
+    }
+  
+
+    public function InventoryInCustomise($id){
+        $isAvaiilable = InventoryCustomise::where('inventories_id',$id)->get();
+        
+        if(count($isAvaiilable)){
+            InventoryCustomise::where('inventories_id',$id)->delete();
+        } 
+    }
+
+    public function saveCutomiseInentryData($data){       
+       InventoryCustomise::create($data);
+       return true;
+    }
+
+    public function getSelectedValue($attrID,$attrSublistID){
+        
+       $data = InventoryCustomise::where('attribute_id',$attrID)->where('inventories_id',session('invoiceId'));       
+        if($attrID !==null){
+            $data->where('attributeSublist_id',$attrSublistID);            
+        }
+        $data = $data->get();
+        return $data;
+    }   
+
+    public function getValuesOfCategory($id){
+        $data = AttributeValue::with(['image'])->where('category_id',$id)->get();        
+        return $data;
+    } 
+
+    public function getVariants($inventoryId){
+        return InventoryVariant::with('image')->where('inventroy_id',$inventoryId)->get();
     }
 }

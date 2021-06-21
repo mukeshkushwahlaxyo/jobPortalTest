@@ -10,9 +10,9 @@
    @endphp
 @endif
 
-{{ Form::hidden('product', $product) }}
+{{-- {{ Form::hidden('product', $product) }} --}}
 
-<div class="row">
+{{-- <div class="row">
   <div class="col-md-12">
     <div class="form-group">
       {!! Form::label('title', trans('app.form.title').'*') !!}
@@ -99,7 +99,7 @@
     </div>
   </div>
 @endif
-
+ --}}
 <fieldset>
   <legend>{{ trans('app.variants') }}</legend>
   <table class="table table-default" id="variantsTable">
@@ -136,13 +136,24 @@
     <tbody style="zoom: 0.80;">
       @php
         $i = 0;
+        $attrID = [];
+        $attrValueId = [];
       @endphp
-      @foreach($combinations as $combination)
+      @foreach($combinations as $key => $combination)
+    
         <tr>
           <td><div class="form-group">{{ $i + 1 }}</div></td>
           <td>
             <div class="form-group">
+              <?php $count = 1; ?>
             @foreach($combination as $attrId => $attrValue)
+         
+              @php
+                $attrID[$i][] = $attrId;
+                $attrValueId[$i][] = key($attrValue);
+              @endphp
+              {{-- {{dd($attrValue)}} --}}
+              
               {{ Form::hidden('variants['. $i .']['. $attrId .']', key($attrValue)) }}
               {{ $attributes[$attrId] .' : '. current($attrValue) }}
               {{ ($attrValue !== end($combination))?'; ':'' }}
@@ -159,32 +170,32 @@
           </td>
           <td>
             <div class="form-group">
-              {!! Form::text('sku['. $i .']', null, ['class' => 'form-control sku', 'placeholder' => trans('app.placeholder.sku'), 'required']) !!}
+              {!! Form::text('sku['. $i .']', isset($variantUpdate[$key]) ? $variantUpdate[$key]->sku : null, ['class' => 'form-control sku', 'placeholder' => trans('app.placeholder.sku'), 'required']) !!}
             </div>
           </td>
           <td>
             <div class="form-group">
-              {!! Form::select('condition['. $i .']', ['New' => trans('app.new'), 'Used' => trans('app.used'), 'Refurbished' => trans('app.refurbished')], null, ['class' => 'form-control condition', 'required']) !!}
+              {!! Form::select('condition['. $i .']', ['New' => trans('app.new'), 'Used' => trans('app.used'), 'Refurbished' => trans('app.refurbished')], isset($variantUpdate[$key]) ? $variantUpdate[$key]->condotion : null, ['class' => 'form-control condition', 'required']) !!}
             </div>
           </td>
           <td>
             <div class="form-group">
-              {!! Form::number('stock_quantity['. $i .']', null, ['class' => 'form-control quantity', 'placeholder' => trans('app.placeholder.stock_quantity'), 'required']) !!}
+              {!! Form::number('stock_quantity['. $i .']', isset($variantUpdate[$key]) ? $variantUpdate[$key]->stock_quantity : null, ['class' => 'form-control quantity', 'placeholder' => trans('app.placeholder.stock_quantity'), 'required']) !!}
             </div>
           </td>
           <td>
             <div class="form-group">
-              {!! Form::number('purchase_price['. $i .']', null, ['class' => 'form-control purchasePrice', 'step' => 'any', 'placeholder' => trans('app.placeholder.purchase_price')]) !!}
+              {!! Form::number('purchase_price['. $i .']', isset($variantUpdate[$key]) ? $variantUpdate[$key]->purchase_price : null, ['class' => 'form-control purchasePrice', 'step' => 'any', 'placeholder' => trans('app.placeholder.purchase_price')]) !!}
             </div>
           </td>
           <td>
             <div class="form-group">
-              {!! Form::number('sale_price['. $i .']', null, ['class' => 'form-control salePrice', 'step' => 'any', 'placeholder' => trans('app.placeholder.sale_price'), 'required']) !!}
+              {!! Form::number('sale_price['. $i .']', isset($variantUpdate[$key]) ? $variantUpdate[$key]->sale_price :null, ['class' => 'form-control salePrice', 'step' => 'any', 'placeholder' => trans('app.placeholder.sale_price'), 'required']) !!}
             </div>
           </td>
           <td>
             <div class="form-group">
-              {!! Form::number('offer_price['. $i .']', null, ['class' => 'form-control offerPrice', 'step' => 'any', 'placeholder' => trans('app.placeholder.offer_price')]) !!}
+              {!! Form::number('offer_price['. $i .']',isset($variantUpdate[$key]) ? $variantUpdate[$key]->offer_price : null, ['class' => 'form-control offerPrice', 'step' => 'any', 'placeholder' => trans('app.placeholder.offer_price')]) !!}
             </div>
           </td>
           <td>
@@ -195,11 +206,13 @@
         </tr>
         <?php $i++; ?>
       @endforeach
+      <input type="hidden" name="attributeId[]" value="{{json_encode($attrID)}}">
+      <input type="hidden" name="attributeValueId[]" value="{{json_encode($attrValueId)}}">
     </tbody>
   </table>
 </fieldset>
 
-<fieldset id="offerDates" hidden>
+{{-- <fieldset id="offerDates" hidden>
   <legend>{{ trans('app.offer_dates') }}</legend>
   <div class="row">
     <div class="col-lg-3 col-md-6 nopadding-right">
@@ -264,5 +277,5 @@
     {!! Form::text('meta_description', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.meta_description')]) !!}
   </div>
 </fieldset>
-
+ --}}
 <p class="help-block">* {{ trans('app.form.required_fields') }}</p>

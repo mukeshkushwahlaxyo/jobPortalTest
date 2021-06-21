@@ -106,7 +106,7 @@
             <div class="input-group">
               {{ Form::hidden('has_variant', 0) }}
               {!! Form::checkbox('has_variant', null, !isset($product) ? 1 : null, ['id' => 'has_variant', 'class' => 'icheckbox_line']) !!}
-              {!! Form::label('has_variant', trans('app.form.has_variant')) !!}
+              {!! Form::label('Is Readymade', trans('Is Readymade')) !!}
               <span class="input-group-addon" id="basic-addon1">
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.has_variant') }}"></i>
               </span>
@@ -115,9 +115,9 @@
 
           <div class="form-group">
             <div class="input-group">
-              {{ Form::hidden('requires_shipping', 0) }}
-              {!! Form::checkbox('requires_shipping', null, !isset($product) ? 1 : null, ['id' => 'requires_shipping', 'class' => 'icheckbox_line']) !!}
-              {!! Form::label('requires_shipping', trans('app.form.requires_shipping')) !!}
+              {{ Form::hidden('isCustomise', 0) }}
+              {!! Form::checkbox('isCustomise', null, !isset($product) ? 1 : null, ['id' => 'requires_shipping','name'=>'isCustomise' ,'class' => 'icheckbox_line']) !!}
+              {!! Form::label('Has Customise Option', trans('Has Customise Option')) !!}
               <span class="input-group-addon" id="basic-addon1">
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.requires_shipping') }}"></i>
               </span>

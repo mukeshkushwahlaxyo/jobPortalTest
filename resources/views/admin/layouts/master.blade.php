@@ -16,6 +16,7 @@
     <!-- Scripts -->
     <link href="{{ mix("css/app.css") }}" rel="stylesheet">
 
+
     <!-- START Page specific Stylesheets -->
     @yield("page-style")
     <!-- END Page specific Stylesheets -->
@@ -149,6 +150,7 @@
     </div>
 
     <script src="{{ mix("js/app.js") }}"></script>
+    <script src="{{ asset("js/comman.js") }}"></script>
 
     {{-- START (Required by only the datetimepicker, Remove it after find a solution) --}}
     {{-- <script>var $Original = jQuery.noConflict(true);</script> --}}

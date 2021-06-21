@@ -1,167 +1,90 @@
+@php
+ $array = [];
+  if(isset($inventory)){
+      $attrID = getAttributeIds($inventory);
+      $variant = getVariant($inventory->id);
+     
+      foreach($variant as $Variant){
+        $attrids = getSelectedVariantAttrValue($Variant->id);
+        foreach($attrids as $attrIDs => $attrIdVal){
+          $array[$attrIDs][] = (string)$attrIdVal;
+        }
+
+      }   
+  }
+@endphp  
+
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-12">
     <div class="box">
       <div class="box-header with-border">
         <h3 class="box-title">{{ isset($inventory) ? trans('app.update_inventory') : trans('app.add_inventory') }}</h3>
       </div> <!-- /.box-header -->
       <div class="box-body">
         @include('admin.partials._product_widget')
-
-        @php
-          if( isset($inventory) ) {
-            $product = $inventory->product;
-          }
-
-          $requires_shipping = $product->requires_shipping || (isset($inventory) && $inventory->product->requires_shipping);
-
-          $title_classes = isset($inventory) ? 'form-control' : 'form-control makeSlug';
-        @endphp
-
-        {{ Form::hidden('product_id', $product->id) }}
-        {{ Form::hidden('brand', $product->brand) }}
-
-        <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              {!! Form::label('title', trans('app.form.title').'*') !!}
-              {!! Form::text('title', null, ['class' => $title_classes, 'placeholder' => trans('app.placeholder.title'), 'required']) !!}
-              <div class="help-block with-errors"></div>
+          <div>
+            <div class="row">   
+              <div class="col-sm-12 col-md-12">       
+                <ul class="nav nav-tabs mb-4" >
+                  <li class="nav-item " >
+                    <a class="nav-link active show_vitalInfo" targetID='vital_information' href="#" aria-current="page" >Vital Information</a>
+                  </li>
+                  @if($product->has_variant)
+                    <li class="nav-item ">
+                      <a class="nav-link show_vitalInfo" targetID='veriant' href="#">Variant</a>
+                      <input type="hidden" id="variantEditData" data-array="{{json_encode($array)}}">
+                    </li>
+                  @endif 
+                  @if($product->isCustomise ) 
+                    <li class="nav-item ">
+                      <a class="nav-link show_customise_property" targetID='customise_property' href="#">Customise Property</a>
+                      <input type="hidden" id="CustomiseIds" data-value="{{isset($attrID) ?  $attrID : ''}}">
+                    </li>
+                  @endif  
+                  
+                </ul>
+              </div>
             </div>
-          </div>
+            @php
+              if( isset($inventory) ) {
+                $product = $inventory->product;
+              }
 
-          <div class="col-md-7 nopadding-right">
-            <div class="form-group">
-              {!! Form::label('sku', trans('app.form.sku').'*', ['class' => 'with-help']) !!}
-              <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sku') }}"></i>
-              {!! Form::text('sku', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.sku'), 'required']) !!}
-              <div class="help-block with-errors"></div>
-            </div>
-          </div>
+              $requires_shipping = $product->requires_shipping || (isset($inventory) && $inventory->product->requires_shipping);
 
-          <div class="col-md-3 nopadding">
-            <div class="form-group">
-              {!! Form::label('condition', trans('app.form.condition').'*', ['class' => 'with-help']) !!}
-              <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.seller_product_condition') }}"></i>
-              {!! Form::select('condition', ['New' => trans('app.new'), 'Used' => trans('app.used'), 'Refurbished' => trans('app.refurbished')], isset($inventory) ? null : 'New', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.select'), 'required']) !!}
-              <div class="help-block with-errors"></div>
-            </div>
-          </div>
+              $title_classes = isset($inventory) ? 'form-control' : 'form-control makeSlug';
+            @endphp
 
-          <div class="col-md-2 nopadding-left">
-            <div class="form-group">
-              {!! Form::label('active', trans('app.form.status').'*', ['class' => 'with-help']) !!}
-              <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.seller_inventory_status') }}"></i>
-              {!! Form::select('active', ['1' => trans('app.active'), '0' => trans('app.inactive')], isset($inventory) ? null : 1, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.select'), 'required']) !!}
-              <div class="help-block with-errors"></div>
+            {{ Form::hidden('product_id', $product->id) }}
+            {{ Form::hidden('brand', $product->brand) }}
+            <div class="hidden customise_property">
+              @include('admin.inventory._customise')
+            </div> 
+
+              <div class="hidden veriant">
+                <div>
+                  @include('admin.inventory._set_variant')
+                </div>
+              </div>
             </div>
+              {!! Form::open(['route' => 'admin.stock.inventory.store', 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!}
+              <div class="vital_information">
+                @include('admin.inventory._vitalInformation')
+              </div>
+            {!! Form::close() !!}
+            {!! Form::open(['route' => 'admin.stock.inventory.storeWithVariant', 'files' => true, 'id' => 'form', 'data-toggle' => 'validator']) !!}  
+              <div id="" class="hidden veriant">
+                  <div id="showCobination"></div>
+              </div>
+            {!! Form::close() !!}
+                
           </div>
+ 
         </div>
-
-        @include('admin.inventory._common')
-
-        <fieldset>
-          <legend>{{ trans('app.form.images') }}</legend>
-          <div class="form-group">
-            <div class="file-loading">
-              <input id="dropzone-input" name="images[]" type="file" accept="image/*" multiple>
-            </div>
-            <span class="small"><i class="fa fa-info-circle"></i> {{ trans('help.multi_img_upload_instruction', ['size' => getAllowedMaxImgSize(), 'number' => getMaxNumberOfImgsForInventory()]) }}</span>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>{{ trans('app.inventory_rules') }}</legend>
-          @if($requires_shipping)
-            <div class="row">
-              <div class="col-md-6 nopadding-right">
-                <div class="form-group">
-                  {!! Form::label('stock_quantity', trans('app.form.stock_quantity').'*', ['class' => 'with-help']) !!}
-                  <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.stock_quantity') }}"></i>
-                  {!! Form::number('stock_quantity', isset($inventory) ? null : 1, ['min' => 0, 'class' => 'form-control', 'placeholder' => trans('app.placeholder.stock_quantity'), 'required']) !!}
-                  <div class="help-block with-errors"></div>
-                </div>
-              </div>
-
-              <div class="col-md-6 nopadding-left">
-                <div class="form-group">
-                  {!! Form::label('min_order_quantity', trans('app.form.min_order_quantity'), ['class' => 'with-help']) !!}
-                  <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.min_order_quantity') }}"></i>
-                  {!! Form::number('min_order_quantity', isset($inventory) ? null : 1, ['min' => 1, 'class' => 'form-control', 'placeholder' => trans('app.placeholder.min_order_quantity')]) !!}
-                </div>
-              </div>
-            </div>
-          @endif
-
-          <div class="row">
-            <div class="col-md-6 nopadding-right">
-              <div class="form-group">
-                {!! Form::label('sale_price', trans('app.form.sale_price').'*', ['class' => 'with-help']) !!}
-                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sale_price') }}"></i>
-                <div class="input-group">
-                  <span class="input-group-addon">{{ config('system_settings.currency_symbol') ?: '$' }}</span>
-                  <input name="sale_price" value="{{ isset($inventory) ? $inventory->sale_price : Null }}" type="number" min="{{ $product->min_price }}" {{ $product->max_price ? ' max="'. $product->max_price .'"' : '' }} step="any" placeholder="{{ trans('app.placeholder.sale_price') }}" class="form-control" required="required">
-                </div>
-                <div class="help-block with-errors"></div>
-              </div>
-            </div>
-            <div class="col-md-6 nopadding-left">
-              <div class="form-group">
-                {!! Form::label('offer_price', trans('app.form.offer_price'), ['class' => 'with-help']) !!}
-                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_price') }}"></i>
-                <div class="input-group">
-                  <span class="input-group-addon">{{ config('system_settings.currency_symbol') ?: '$' }}</span>
-                  {!! Form::number('offer_price', null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('app.placeholder.offer_price')]) !!}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 nopadding-right">
-              <div class="form-group">
-                {!! Form::label('offer_start', trans('app.form.offer_start'), ['class' => 'with-help']) !!}
-                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_start') }}"></i>
-                <div class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                  {!! Form::text('offer_start', null, ['class' => 'form-control datetimepicker', 'placeholder' => trans('app.placeholder.offer_start')]) !!}
-                </div>
-                <div class="help-block with-errors"></div>
-              </div>
-            </div>
-
-            <div class="col-md-6 nopadding-left">
-              <div class="form-group">
-                {!! Form::label('offer_end', trans('app.form.offer_end'), ['class' => 'with-help']) !!}
-                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_end') }}"></i>
-                <div class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                  {!! Form::text('offer_end', null, ['class' => 'form-control datetimepicker', 'placeholder' => trans('app.placeholder.offer_end')]) !!}
-                </div>
-                <div class="help-block with-errors"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            {!! Form::label('linked_items[]', trans('app.form.linked_items'), ['class' => 'with-help']) !!}
-            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.inventory_linked_items') }}"></i>
-            {!! Form::select('linked_items[]', $inventories , isset($inventory) ? unserialize($inventory->linked_items) : Null, ['class' => 'form-control select2-normal', 'multiple' => 'multiple']) !!}
-            <div class="help-block with-errors"></div>
-          </div>
-        </fieldset>
-
-        <p class="help-block">* {{ trans('app.form.required_fields') }}</p>
-
-        @if(isset($inventory))
-          <a href="{{ route('admin.stock.inventory.index') }}" class="btn btn-default btn-flat">{{ trans('app.form.cancel_update') }}</a>
-        @endif
-
-        {!! Form::submit(trans('app.form.save'), ['class' => 'btn btn-flat btn-lg btn-new pull-right']) !!}
-      </div>
     </div>
   </div><!-- /.col-md-8 -->
 
-  <div class="col-md-4 nopadding-left">
+  {{-- <div class="col-md-4 nopadding-left">
     <div class="box">
       <div class="box-header with-border">
           <h3 class="box-title">{{ trans('app.additional_info') }}</h3>
@@ -290,5 +213,23 @@
         </fieldset>
       </div>
     </div>
-  </div><!-- /.col-md-4 -->
+  </div> --}}
+
+  <!-- /.col-md-4 -->
 </div><!-- /.row -->
+
+<script>
+  {{-- alert('sdsd6') --}}
+  // $(document).on('click','.show_vitalInfo',function(){
+    // alert('sdsd')
+    // var targetClass = $(this).attr('targetID')
+    // $('#vital_information').addClass('hidden')
+    // $('#customise_property').addClass('hidden')
+    // // $('#vital_information').addClass('hidden')
+    // // $('#vital_information').addClass('hidden')
+
+    // $('#'+targetClass).removeClass('hidden')
+    // $('#'+targetClass).addClass('show')
+  
+  // })
+</script>

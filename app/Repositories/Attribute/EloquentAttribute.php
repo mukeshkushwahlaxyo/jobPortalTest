@@ -43,6 +43,7 @@ class EloquentAttribute extends EloquentRepository implements BaseRepository, At
     public function entities($id)
     {
         $entities['attribute'] = parent::find($id);
+        $entities['attribute']->attributeValues()->with(['image'])->get();
         // dd(parent::find($id)->attributeValues()->get());
 
         $entities['attributeValues'] = $entities['attribute']->attributeValues()->with(['image','getShopName.owner'])->get();

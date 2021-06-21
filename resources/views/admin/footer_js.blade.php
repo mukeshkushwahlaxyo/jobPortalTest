@@ -37,6 +37,7 @@
 				apply_busy_filter();
 
 				var url = $(this).data('link');
+				alert(url)
 
 				if (url.indexOf('#') == 0) {
 					$(url).modal('open');

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Validations;
 
 use App\Http\Requests\Request;
 
-class UpdateInventoryRequest extends Request
+class InventoryCustomiseRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,6 @@ class UpdateInventoryRequest extends Request
      */
     public function rules()
     {
-        if (! $this->input('key_features')) {
-            $this->merge(['key_features' => Null]);
-        }
-        if (! $this->input('linked_items')) {
-            $this->merge(['linked_items' => Null]);
-        }
-
-        $id = $this->route('inventory'); //Current model ID
-
         return [
             'sku' => 'required|composite_unique:inventories,sku, '.$id,
             'title' => 'required',

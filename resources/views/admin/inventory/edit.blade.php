@@ -1,11 +1,11 @@
 @extends('admin.layouts.master')
 
 @section('content')
-    {!! Form::model($inventory, ['method' => 'POST', 'route' => ['admin.stock.inventory.update', $inventory->id], 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!}
+    {{-- {!! Form::model($inventory, ['method' => 'POST', 'route' => ['admin.stock.inventory.update', $inventory->id], 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!} --}}
 
         @include('admin.inventory._form')
 
-    {!! Form::close() !!}
+    {{-- {!! Form::close() !!} --}}
 @endsection
 
 @section('page-script')

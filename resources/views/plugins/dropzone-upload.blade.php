@@ -135,7 +135,7 @@
 
 			var action = $(this).attr('action');
 			var data = $("#form-ajax-upload").serializeArray();
-
+			// alert('sdsdd')
 			$.each(data, function(key,input){
 				formData.append(input.name, input.value);
 			});
@@ -154,16 +154,18 @@
 				contentType: false,   // tell jQuery not to set contentType
 			})
 			.done(function(result){
+				
 				formData.append('model_id', result.id);
 				formData.append('model_name', result.model);
-				formData.append('redirect_url', result.redirect);
-
+				formData.append('redirect_url', result.redirect==='false' ? window.location.href:result.redirect);
+				// console.log(result)
 				var node = $('#dropzone-input');
 				if(node.fileinput("getFilesCount") > 0) { // Upload only if there is files
 					node.fileinput('upload').fileinput('disable');
 				}
 				else {
-					window.location.href = result.redirect;
+					// debugger
+					window.location.href = result.redirect==='false' ? window.location.href:result.redirect;
 				}
 			})
 			.fail(function(xhr){

@@ -919,12 +919,15 @@ class ListHelper
             'feedbacks:rating,feedbackable_id,feedbackable_type',
             'image:path,imageable_id,imageable_type',
             'product:id,slug',
-            'product.image:path,imageable_id,imageable_type'
+            'product.image:path,imageable_id,imageable_type',
+            'getVariant.image',
+            'getCustomise',
+
         ])
-        ->zipcode()->available()->groupBy('product_id', 'shop_id')
+        ->zipcode()->groupBy('product_id', 'shop_id')
         ->latest()->limit(100)->get();
     }
-
+    //->available()
     /**
      * Get variants of product of given item
      * @return array

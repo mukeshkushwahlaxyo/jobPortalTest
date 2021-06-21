@@ -13,13 +13,14 @@ class CreateInventoryWithVariantRequest extends Request
      */
     public function authorize()
     {
+
         $tempObj = json_decode($this->input('product'));
 
-        if (is_object($tempObj) && $tempObj->id) {
-            return $this->user()->shop->canAddThisInventory($tempObj->id);
-        }
+        // if (is_object($tempObj) && $tempObj->id) {
+            // return $this->user()->shop->canAddThisInventory($tempObj->id);
+        // }
 
-        return false;
+        return true;
     }
 
     /**
@@ -36,7 +37,7 @@ class CreateInventoryWithVariantRequest extends Request
                     ]); //Set user_id
 
         return [
-            'title' => 'required',
+            // 'title' => 'required',
             'variants.*' => 'required',
             'sku.*' => 'required|distinct|unique:inventories,sku',
             'sale_price.*' => 'bail|required|numeric|min:0',
@@ -64,14 +65,14 @@ class CreateInventoryWithVariantRequest extends Request
             'offer_end.after' => trans('validation.offer_end_after'),
         ];
 
-        foreach($this->request->get('sku') as $key => $val){
-            $messages['sku.'.$key.'.unique'] = trans('validation.sku-unique', ['attribute' => $key+1, 'value' => $val]);
-            $messages['sku.'.$key.'.distinct'] = trans('validation.sku-distinct', ['attribute' => $key+1]);
-        }
+        // foreach($this->request->get('sku') as $key => $val){
+        //     $messages['sku.'.$key.'.unique'] = trans('validation.sku-unique', ['attribute' => $key+1, 'value' => $val]);
+        //     $messages['sku.'.$key.'.distinct'] = trans('validation.sku-distinct', ['attribute' => $key+1]);
+        // }
 
-        foreach($this->request->get('offer_price') as $key => $val){
-            $messages['offer_price.'.$key.'.numeric'] = $val .' '. trans('validation.offer_price-numeric');
-        }
+        // foreach($this->request->get('offer_price') as $key => $val){
+        //     $messages['offer_price.'.$key.'.numeric'] = $val .' '. trans('validation.offer_price-numeric');
+        // }
 
         return $messages;
     }

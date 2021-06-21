@@ -61,7 +61,7 @@ class HomeController extends Controller
 
         //Recently Added Items
         $recent = ListHelper::latest_available_items(10);
-
+        return($recent);
         //additional Items
         $additional_items = ListHelper::random_items(10);
 
@@ -180,8 +180,8 @@ class HomeController extends Controller
      */
     public function product($slug)
     {
-        $item = Inventory::where('slug', $slug)->available()->withCount('feedbacks')->first();
-
+        $item = Inventory::where('slug', $slug)->withCount('feedbacks')->first();
+        //->available()
         if (! $item) {
             return view('theme::exceptions.item_not_available');
         }
@@ -200,26 +200,29 @@ class HomeController extends Controller
             'images:id,path,imageable_id,imageable_type',
             'tags:id,name',
         ]);
-
         $this->update_recently_viewed_items($item); //update_recently_viewed_items
 
-        $variants = ListHelper::variants_of_product($item, $item->shop_id);
+        $variants = ListHelper::variants_of_product($item, $item->shop_id); 
+        //get the total variant  of  prroduct  from inventry 
 
         $attr_pivots = \DB::table('attribute_inventory')->select('attribute_id','inventory_id','attribute_value_id')
         ->whereIn('inventory_id', $variants->pluck('id'))->get();
 
-        $item_attrs = $attr_pivots->where('inventory_id', $item->id)->pluck('attribute_value_id')->toArray();
 
+        $item_attrs = $attr_pivots->where('inventory_id', $item->id)->pluck('attribute_value_id')->toArray();
+        //geting attribute id using inventry number
+        
         $attributes = \App\Attribute::select('id','name','attribute_type_id','order')
         ->whereIn('id', $attr_pivots->pluck('attribute_id'))
         ->with(['attributeValues' => function($query) use ($attr_pivots) {
             $query->whereIn('id', $attr_pivots->pluck('attribute_value_id'))->orderBy('order');
         }])->orderBy('order')->get();
-
+        
+        // dd($variants);  
         // TEST
         $related = ListHelper::related_products($item);
         $linked_items = ListHelper::linked_items($item);
-
+        // dd($related);
         if(! $linked_items->count()) {
             $linked_items = $related->random($related->count() >= 3 ? 3 : $related->count());
         }
@@ -231,7 +234,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Open product quick review modal
+     * Open product quick review modalrt
      *
      * @param  slug  $slug
      * @return \Illuminate\Http\Response

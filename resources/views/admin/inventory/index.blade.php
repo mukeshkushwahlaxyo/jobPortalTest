@@ -4,7 +4,6 @@
 	@can('create', App\Inventory::class)
 		@include('admin.inventory._add')
 	@endcan
-
 	<div class="box">
 		<div class="nav-tabs-custom">
 			<ul class="nav nav-tabs nav-justified">

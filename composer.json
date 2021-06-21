@@ -85,6 +85,9 @@
         ]
     },
     "autoload-dev": {
+        "files": [
+            "bootstrap/helpers.php"
+        ],
         "psr-4": {
             "Tests\\": "tests/"
         }

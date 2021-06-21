@@ -16,11 +16,16 @@ Route::delete('inventory/{inventory}/trash', 'InventoryController@trash')->name(
 Route::get('inventory/{inventory}/restore', 'InventoryController@restore')->name('inventory.restore');
 Route::get('inventory/setVariant/{product}', 'InventoryController@setVariant')->name('inventory.setVariant');
 Route::get('inventory/add/{product}', 'InventoryController@add')->name('inventory.add');
-Route::get('inventory/addWithVariant/{product}', 'InventoryController@addWithVariant')->name('inventory.addWithVariant');
+Route::post('inventory/addWithVariant/', 'InventoryController@addWithVariant')->name('inventory.addWithVariant');
 Route::post('inventory/storeWithVariant', 'InventoryController@storeWithVariant')->name('inventory.storeWithVariant');
 Route::post('inventory/store', 'InventoryController@store')->name('inventory.store')->middleware('ajax');
 Route::post('inventory/{inventory}/update', 'InventoryController@update')->name('inventory.update')->middleware('ajax');
 Route::get('inventory/{inventory}/editQtt', 'InventoryController@editQtt')->name('inventory.editQtt');
+Route::post('inventory/getAttributeValue/', 'InventoryController@getAttributeValue')->name('inventory.getAttributeValue');
 Route::put('inventory/{inventory}/updateQtt', 'InventoryController@updateQtt')->name('inventory.updateQtt');
 Route::get('inventory/{status}/getInventory', 'InventoryController@getInventory')->name('inventory.getMore')->middleware('ajax');
 Route::resource('inventory', 'InventoryController', ['except' =>['create', 'store', 'update']]);
+
+Route::post('inventory/saveCustomiseInventryDetail/', 'InventoryController@saveCustomiseInventryDetail')->name('inventory.saveCustomiseInventryDetail');
+
+Route::post('inventory/getValuesOfCategory/', 'InventoryController@getValuesOfCategory')->name('inventory.getValuesOfCategory');   
