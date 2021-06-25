@@ -39,11 +39,11 @@ Route::group(['namespace' => 'Api'], function(){
 	Route::post('addToCart/{slug}', 'CartController@addToCart');
 	Route::delete('cart/removeItem', 'CartController@remove');
 	Route::get('carts', 'CartController@index');
-	Route::get('cart/{cart}', 'CartController@show');
+	Route::get('cart/{cart}', 'CartController@show');	
 	Route::put('cart/{cart}/update', 'CartController@update');
-	Route::post('cart/{cart}/shipTo', 'CartController@shipTo');
+	Route::post('cart/{cart}/shipTo', 'CartController@shipTo');	
 	Route::post('cart/{cart}/shipping', 'CartController@shipping');
-	Route::post('cart/{cart}/checkout', 'CheckoutController@checkout');
+	Route::post('/{cart}/checkout/', 'CheckoutController@checkout');
 
 	// Route::get('cart/{expressId?}', 'CartController@index')->name('cart.index');
 	// Route::get('checkout/{slug}', 'CheckoutController@directCheckout');

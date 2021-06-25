@@ -518,7 +518,7 @@ if (! function_exists('crosscheckAndUpdateOldCartInfo'))
         if (empty($request->all())) {
             return $cart;
         }
-
+      
         $total = 0;
         $quantity = 0;
         $discount = Null;

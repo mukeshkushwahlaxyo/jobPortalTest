@@ -72,7 +72,7 @@ class CartController extends Controller
                 $cart->save();
             }
         }
-
+     
         return view('theme::cart', compact('carts', 'business_areas', 'shipping_zones', 'shipping_options','platformDefaultPackaging', 'expressId'));
     }
 
@@ -183,7 +183,7 @@ class CartController extends Controller
      */
     public function checkout(Request $request, Cart $cart)
     {
-        if (! crosscheckCartOwnership($request, $cart)) {
+                if (! crosscheckCartOwnership($request, $cart)) {
             return redirect()->route('cart.index')->with('warning', trans('theme.notify.please_login_to_checkout'));
         }
 

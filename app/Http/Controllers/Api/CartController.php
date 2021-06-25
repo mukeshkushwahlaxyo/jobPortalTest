@@ -31,6 +31,7 @@ class CartController extends Controller
     {
         $carts = Cart::whereNull('customer_id')->where('ip_address', $request->ip());
 
+
         if(Auth::guard('api')->check()) {
             $carts = $carts->orWhere('customer_id', Auth::guard('api')->user()->id);
         }
@@ -38,11 +39,8 @@ class CartController extends Controller
         $carts = $carts->with('coupon:id,shop_id,name,code,value,type')->get();
 
         // Load related models
-        $carts->load(['shop' => function($q) {
-            $q->with(['config', 'packagings' => function($query){
-                $query->active();
-            }])->active();
-        }, 'inventories.image', 'shippingPackage']);
+        $carts->load(['inventories.image', 'shippingPackage']);
+        return ($carts);
 
         return CartResource::collection($carts);
     }
@@ -95,16 +93,15 @@ class CartController extends Controller
         }
 
         $customer_id = Auth::guard('api')->check() ? Auth::guard('api')->user()->id : Null;
-
         if($customer_id){
-            $old_cart = Cart::where('shop_id', $item->shop_id)->where(function($query) use ($customer_id){
+            $old_cart = Cart::where(function($query) use ($customer_id){
                 $query->where('customer_id', $customer_id)->orWhere(function($q){
                     $q->whereNull('customer_id')->where('ip_address', request()->ip());
                 });
             })->first();
         }
         else{
-            $old_cart = Cart::where('shop_id', $item->shop_id)->whereNull('customer_id')->where('ip_address', $request->ip())->first();
+            $old_cart = Cart::whereNull('customer_id')->where('ip_address', $request->ip())->first();
         }
 
         // Check the available stock limit

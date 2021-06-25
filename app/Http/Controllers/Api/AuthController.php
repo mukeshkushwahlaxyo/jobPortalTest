@@ -52,6 +52,8 @@ class AuthController extends Controller
             'password' => $request->password
         ];
 
+        // dd($credentials);
+
         if (Auth::guard('customer')->attempt($credentials)) {
 
             $customer = Auth::guard('customer')->user();

@@ -61,7 +61,7 @@ class HomeController extends Controller
 
         //Recently Added Items
         $recent = ListHelper::latest_available_items(10);
-        return($recent);
+        // return($recent);
         //additional Items
         $additional_items = ListHelper::random_items(10);
 

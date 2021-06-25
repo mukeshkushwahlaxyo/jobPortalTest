@@ -44,7 +44,7 @@
 						    					style="margin-right: 5px;" 
 						    					name="{{$categoryAttr->attribute_id}},{{$categoryAttr->attribute_sublist_id === null ? '':$categoryAttr->attribute_sublist_id}}[]" 
 						    					value="{{$Cate->id}}" 
-						    					id="category_{{$Cate->id}}">
+						    					id="category_{{$categoryAttr->attribute_id}}{{$categoryAttr->attribute_sublist_id === null ? '':$categoryAttr->attribute_sublist_id}}{{$Cate->id}}">
 						    					{{$Cate->name}}
 						    		</span>		   		
 				    		@endforeach		

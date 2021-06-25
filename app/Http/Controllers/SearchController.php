@@ -50,15 +50,15 @@ class SearchController extends Controller
     public function findCustomer(Request $request)
     {
         $term = $request->input('q');
-
+        // dd($term);
         $results = [];
 
         if(strlen($term) < 3) {
 			return Response::json($results);
         }
 
-        $customers = Customer::search($term)->where('active', 1)->take(5)->get();
-
+        $customers = Customer::where('name', 'like', "%{$term}%")->where('active', 1)->take(5)->get();
+        // dd($customers);
         foreach ($customers as $customer) {
 		    $results[] = ['text' => get_formated_cutomer_str($customer) , 'id' => $customer->id];
         }

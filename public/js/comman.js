@@ -1,5 +1,5 @@
  function getAttributeValue(attrIds){
-	alert('fun')
+	apply_busy_filter();
 	var productId = $('#productID').val();
 	$.ajax({
 		method:'post',
@@ -24,6 +24,8 @@
 				}
 				count++
 			})
+
+			remove_busy_filter();
 		}
 	})
 }
@@ -87,12 +89,14 @@ $(document).on('submit','#variantForm',function(e){
 	// 	console.log($('.setVariant > option').attr('value'))
 	// })
 	var formData = $(this) .serialize()
+	apply_busy_filter();
 	$.ajax({
 		method:'post',
 		url:'/admin/stock/inventory/addWithVariant/',
 		data:formData,
 		success:function(res){
 			$('#showCobination').html(res)
+			remove_busy_filter();
 		}
 
 	})
@@ -127,6 +131,7 @@ $(document).on('click','.showCutomise',function(){
 })
 
 function getValues(catId,ids,attrID='',attrSublistID='',isShow=''){
+	apply_busy_filter();
 	$.ajax({
 		method:'post',
 		url:'/admin/stock/inventory/getValuesOfCategory/',
@@ -135,13 +140,14 @@ function getValues(catId,ids,attrID='',attrSublistID='',isShow=''){
 			// $('.showAttributeValuesOfCategory').addClass('hidden')
 			// $('.showAttributeValuesOfCategory').removeClass('show')
 			$('#val_'+ids).html(res)
-			if(res){
+			// if(res){
 				if(isShow ==='' || isShow === true)
 					$('#val_'+ids).removeClass('hidden')
 					$('#val_'+ids).addClass('show')
 				$('.saveButton').removeClass('hidden')
 				$('.saveButton').addClass('show')
-			}	
+			// }		
+			remove_busy_filter();
 		}
 	})
 }
@@ -149,12 +155,13 @@ function getValues(catId,ids,attrID='',attrSublistID='',isShow=''){
 $(document).on('click','.getValuesOfCate',function(){
 	var catId = $(this).val()	
 	var ids = $(this).attr('data-id')	
-	var checked = $("input[id=category_"+ catId + "]:checked").length;
-   
-    if(checked){
+	var checked = $("input[id=category_"+ ids + "]:checked").length;
+   	console.log($("#category_"+ids).is(":checked"))
+    if($("#category_"+ids).is(":checked")){
 		getValues(catId,ids)
 	}
 	else{
+		// alert('unchecked')
 		$('.val_'+ids).remove()
 		$('#val_'+ids).removeClass('show')
 		$('#val_'+ids).addClass('hidden')
@@ -162,15 +169,10 @@ $(document).on('click','.getValuesOfCate',function(){
 })
 
 
-function  getCustomiseAttribute(ids){
-	console.log(ids);
-}
-
 $(document).ready(function(){
 	var id = $('#CustomiseIds').attr('data-value');
 	var array = $('#variantEditData').attr('data-array');
 	array = JSON.parse(array)
-	console.log(array.val_1)	
 	$.each(array,(index,value)=>{
 		// $(value).each((index1,value1)=>{
 			$('.'+index).val(value)
@@ -182,3 +184,37 @@ $(document).ready(function(){
 	$('#variantForm').submit()
 })
 
+
+
+
+//Explore Module JS
+
+function getExploreTabsData(type){
+	$.ajax({
+		method:'post',
+		url:'explore/post',
+		data:{type:type},
+		success:function(res){
+			$('.showContant').html(res)
+		}
+	})
+}
+
+
+$(document).on('submit','#postForm',function(event){
+	event.preventDefault()
+	var formData = new FormData($(this)[0]);
+	
+	var  url = $(this).attr('action')
+	$.ajax({
+		method:'post',
+		url:url,
+		processData: false,
+    	contentType: false,
+		data:formData,
+		success:function(res){
+			$('#massSelectArea').html(res)
+			$('.close').click();
+		}
+	})
+})

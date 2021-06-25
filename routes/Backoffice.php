@@ -141,6 +141,11 @@ Route::group(['middleware' => ['auth'], 'namespace' => 'Admin', 'as' => 'admin.'
 			include('admin/GiftCard.php');
 		});
 
+		Route::group(['as' => 'explore.'], function()
+		{
+			include('admin/Explore.php');
+		});
+
 		// Support Routes for Admin
 		Route::group(['as' => 'support.', 'prefix' => 'support'], function()
 		{

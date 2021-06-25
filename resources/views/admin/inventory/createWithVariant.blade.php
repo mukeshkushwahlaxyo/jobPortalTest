@@ -45,7 +45,6 @@
 
         $("#variantsTable > tbody tr:first select.condition").change(function(){
             var value = $(this).val();
-            console.log(value);
             $('select.condition').each(function(){
                 $(this).val(value);
             })

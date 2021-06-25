@@ -16,7 +16,7 @@
 		        {!! Form::model($shop, ['method' => 'PUT', 'route' => ['admin.setting.basic.config.update', $shop->id], 'files' => true, 'id' => 'form', 'class' => 'form-horizontal', 'data-toggle' => 'validator']) !!}
 			    	<div class="col-sm-9">
 						<div class="form-group">
-							{!! Form::label('name', '*' . trans('app.shop_name') . ':', ['class' => 'with-help col-sm-3 control-label']) !!}
+							{!! Form::label('name', '*' . trans('app.shop_name1') . ':', ['class' => 'with-help col-sm-3 control-label']) !!}
 					        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.shop_name') }}"></i>
 						  	<div class="col-sm-8 nopadding-left">
 						  		@if($can_update)

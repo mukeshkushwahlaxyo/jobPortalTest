@@ -21,7 +21,7 @@
                   <a href="javascript:void(0)">
                     <i class="fa fa-angle-double-right"></i>
                     {{ trans('nav.categories') }}
-                    <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-angle-left pull-right"></i> 
                   </a>
                   <ul class="treeview-menu">
                     @can('index', \App\CategoryGroup::class)
@@ -221,7 +221,15 @@
             </ul>
           </li>
         @endif
-
+        @if(Gate::allows('index', \App\Merchant::class) || Gate::allows('index', \App\Shop::class))
+          <li class="treeview {{ Request::is('admin/explore*') ? 'active' : '' }}">
+            <a href="{{ url('admin/explore') }}">
+              <i class="fa fa-search"></i>
+              <span>{{ trans('Explore') }}</span>
+              <i class=" pull-right"></i>
+            </a>
+          </li>
+        @endif
         @if(is_incevio_package_loaded('wallet'))
           @if(Auth::user()->isAdmin())
 
