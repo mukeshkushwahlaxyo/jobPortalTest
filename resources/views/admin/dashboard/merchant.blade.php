@@ -6,7 +6,7 @@
 
 @section('content')
 
-	@include('admin.partials._subscription_notice')
+	{{-- @include('admin.partials._subscription_notice') --}}
 
     <!-- Info boxes -->
     <div class="row">
@@ -581,6 +581,7 @@
 
 	    </div><!-- /.col-*-* -->
     </div><!-- /.row -->
+}
 @endsection
 
 @section('page-script')

@@ -1,5 +1,6 @@
 <div class="row">
 	<div class="col-md-12">
+
 		@include('admin.partials._subscription_notice')
 
 		<!-- Error Message -->

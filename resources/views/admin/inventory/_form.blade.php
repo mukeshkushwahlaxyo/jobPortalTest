@@ -67,7 +67,11 @@
                 </div>
               </div>
             </div>
-              {!! Form::open(['route' => 'admin.stock.inventory.store', 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!}
+              @if(isset($inventory))
+                {!! Form::model($inventory, ['method' => 'POST', 'route' => ['admin.stock.inventory.update', $inventory->id], 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!}
+              @else  
+                {!! Form::open(['route' => 'admin.stock.inventory.store', 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!}
+              @endif  
               <div class="vital_information">
                 @include('admin.inventory._vitalInformation')
               </div>

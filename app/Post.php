@@ -17,7 +17,7 @@ class Post extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'description','shop_id'];
+    protected $fillable = ['title', 'description','shop_id','slug'];
    
     /**
      * The has Many Relationship
@@ -27,5 +27,15 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class)->whereNull('parent_id');
+    }
+
+    public function share()
+    {
+        return $this->hasMany(Share::class,'post_id','id');
+    }
+
+    public function like()
+    {
+        return $this->hasMany(Like::class,'post_id','id');
     }
 }

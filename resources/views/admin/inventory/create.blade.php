@@ -1,14 +1,14 @@
 @extends('admin.layouts.master')
 
 @section('content')
-{{--   @if(!$product->has_variant)
+  @if(!$product->has_variant)
     {!! Form::open(['route' => 'admin.stock.inventory.store', 'files' => true, 'id' => 'form-ajax-upload', 'data-toggle' => 'validator']) !!}
-  @endif   --}}
+  @endif  
 
         @include('admin.inventory._form')
 
   {{-- @if(!$product->has_variant) --}}
-    {{-- {!! Form::close() !!} --}}
+    {!! Form::close() !!}
   {{-- @endif   --}}
 @endsection
 

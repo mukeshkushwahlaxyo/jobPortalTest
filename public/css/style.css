@@ -1,6 +1,8 @@
 #exploreProfileBackImage{
 	height: 400px;
-	background-image: url('nologo.jpg');
+	/*background-image: url('nologo.jpg');*/
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 #profileImage{		
@@ -8,9 +10,11 @@
 }
 
 #profileImage img{
-	position: relative;
-    top: 224px;
+	  position: relative;  
+    top: 258px;
     border-radius: 100%;
+    width: 209px;
+    height: 201px;
 }
 
 .imageWrap{
@@ -32,21 +36,29 @@
     font-size: 17px;
     font-family: 'DM Sans', sans-serif;
     font-family: DM Sans;
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 21px;
-	color: #000000;
+  	font-style: normal;
+  	font-weight: 500;
+  	font-size: 16px;
+  	line-height: 21px;
+  	color: #000000;
 }
 
 .designerText{
 	margin-bottom: 50px;
 }
 
+.card{
+  padding: 10px 0px 30px 0 !important;
+}
 
 .card-custom {
   overflow: hidden;
-  min-height: 0px;
+  min-height: 190px;
+  box-shadow: 0 0 15px rgba(10, 10, 10, 0.3);
+}
+
+.addpost {
+  overflow: hidden;
   box-shadow: 0 0 15px rgba(10, 10, 10, 0.3);
 }
 
@@ -95,7 +107,51 @@
   height: 100px;
 }
 
-
 .post_desc{
 	width: 578px !important;
 }
+
+.card-body{
+  text-align: center;
+}
+.card-body img{
+    width: 92%;
+    height: 296px;
+}
+
+.card-footer{
+    padding-left: 15px !important;
+    padding-top: 10px !important;
+    font-family: DM Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.32px;
+    color: #0A0A0A;
+}
+
+.explorePage > .btn {
+    font-weight: 600!important;
+    word-spacing: 1px;
+    letter-spacing: .6px;
+    font-size: 14px!important;
+    font-family: "Open Sans",Arial;
+    text-transform: uppercase;
+}
+
+.review-image{
+  text-align: initial !important; 
+}
+
+.customerName{
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  color: #0A0A0A;
+}
+

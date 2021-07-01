@@ -10,6 +10,7 @@ use App\InventoryVariantAttribute;
 use App\InventoryCustomise;
 use App\Attribute;
 use App\AttributeValue;
+use App\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Repositories\BaseRepository;
@@ -428,5 +429,9 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
 
     public function getVariants($inventoryId){
         return InventoryVariant::with('image')->where('inventroy_id',$inventoryId)->get();
+    }
+
+    public function getCategory($id){
+        return Category::find($id);
     }
 }

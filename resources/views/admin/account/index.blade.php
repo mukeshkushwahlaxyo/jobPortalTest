@@ -17,7 +17,6 @@
 						<i class="fa fa-user hidden-sm"></i>
 						{{ trans('app.profile') }}
 					</a></li>
-
 					<li class="{{ Request::is('admin/account/billing') ? 'active' : '' }}"><a href="#billing_tab" data-toggle="tab">
 						<i class="fa fa-credit-card hidden-sm"></i>
 						{{ trans('app.billing') }}

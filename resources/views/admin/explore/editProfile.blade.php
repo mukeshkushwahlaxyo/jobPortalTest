@@ -1,4 +1,4 @@
-<form action="{{url('admin/explore/store')}}" enctype="multipart/form-data" method="POST" id="postForm">
+<form action="{{url('admin/saveMerchantProfile')}}" enctype="multipart/form-data" method="POST" id="postForm">
 	@csrf
 	<div class="modal-dialog modal-md">
 	    <div class="modal-content">
@@ -8,7 +8,7 @@
 	        	{{ trans('app.form.form') }}
 	        </div>
 	        <div class="modal-body">
-		       		@include('admin.explore._form_post')
+		       		@include('admin.explore.profile_edit_form')
 	        </div>
 	      
 	        <div class="modal-footer">

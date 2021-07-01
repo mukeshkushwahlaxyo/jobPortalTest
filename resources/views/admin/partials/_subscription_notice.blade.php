@@ -1,4 +1,5 @@
 @if(Auth::user()->isSubscribed() && ! Auth::user()->shop->hide_trial_notice)
+
 	@php
 		$subscription = $current_plan ?? Auth::user()->getCurrentPlan();
 	@endphp
@@ -20,18 +21,20 @@
 				</span>
 			@endif
 		</div>
-	@elseif($subscription->provider == 'wallet' && $subscription->active())
-		<div class="alert alert-success alert-dismissible">
-			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-			<strong><i class="icon fa fa-info-circle"></i>{{ trans('app.notice') }}</strong>
-			{!! trans('messages.next_billing_date', ['date' => $subscription->ends_at->toRfc7231String()]) !!}
+	@elseif(isset($subscription->provider))
+		@if($subscription->provider == 'wallet' && $subscription->active())
+			<div class="alert alert-success alert-dismissible">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<strong><i class="icon fa fa-info-circle"></i>{{ trans('app.notice') }}</strong>
+				{!! trans('messages.next_billing_date', ['date' => $subscription->ends_at->toRfc7231String()]) !!}
 
-			@if(Auth::user()->isMerchant())
-				<span class="pull-right">
-		    		<a href="{{ route(config('wallet.routes.deposit_form')) }}" class="btn btn-sm bg-navy">{{ trans('wallet::lang.deposit_fund') }}</a>
-				</span>
-			@endif
-		</div>
+				@if(Auth::user()->isMerchant())
+					<span class="pull-right">
+			    		<a href="{{ route(config('wallet.routes.deposit_form')) }}" class="btn btn-sm bg-navy">{{ trans('wallet::lang.deposit_fund') }}</a>
+					</span>
+				@endif
+			</div>
+		@endif	
 	@elseif(Auth::user()->isOnGenericTrial())
 		<div class="alert alert-warning alert-dismissible">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>

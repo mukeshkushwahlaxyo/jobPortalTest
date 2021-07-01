@@ -13,7 +13,7 @@ class EloquentAccount extends EloquentRepository implements BaseRepository, Acco
 
     public function profile()
     {
-        return Auth::user();
+        return User::with(['image','role'])->find(Auth::user()->id);
     }
 
     public function updateProfile(Request $request)

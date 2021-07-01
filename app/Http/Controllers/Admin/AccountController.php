@@ -43,6 +43,7 @@ class AccountController extends Controller
     public function profile()
     {
         $profile = $this->profile->profile();
+        // dd($profile);
 
         return view('admin.account.index', compact('profile'));
     }

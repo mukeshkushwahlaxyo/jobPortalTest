@@ -1,3 +1,9 @@
+ $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
  function getAttributeValue(attrIds){
 	apply_busy_filter();
 	var productId = $('#productID').val();
@@ -188,19 +194,23 @@ $(document).ready(function(){
 
 
 //Explore Module JS
-
 function getExploreTabsData(type){
+	apply_busy_filter();
 	$.ajax({
 		method:'post',
 		url:'explore/post',
 		data:{type:type},
 		success:function(res){
 			$('.showContant').html(res)
+			remove_busy_filter();
 		}
 	})
 }
 
 
+$(document).ready(function(){
+	getExploreTabsData('post')
+})
 $(document).on('submit','#postForm',function(event){
 	event.preventDefault()
 	var formData = new FormData($(this)[0]);
@@ -213,8 +223,56 @@ $(document).on('submit','#postForm',function(event){
     	contentType: false,
 		data:formData,
 		success:function(res){
+			location.reload()
 			$('#massSelectArea').html(res)
 			$('.close').click();
+		}
+	})
+})
+
+function filterProduct(type){
+	$.ajax({
+		method:'post',
+		url:'explore/filter/',
+		data:{type:type},
+		success:function(res){
+			$('#exploreProduct').html(res);
+		}
+	})
+}
+
+$(document).on('click','#tagButton',function(){
+	if($('#categoryPost').hasClass('hidden')){
+		$('#categoryPost').removeClass('hidden');
+		$('#categoryPost').addClass('show');
+	}
+	else{
+		$('#categoryPost').removeClass('show');
+		$('#categoryPost').addClass('hidden');
+	}
+})
+
+$(document).on('change','#caterory_id',function(){
+	var id = $(this).val();
+
+	$.ajax({
+		method:'get',
+		url:'explore/getProductByCategory/'+id,
+		data:{id:id},
+		success:function(res){
+			$('#product_id').html(res);
+		}
+	})
+})
+
+$(document).on('click','.delete',function(){
+	var url = $(this).attr('data-link')
+
+	$.ajax({
+		method:'post',
+		url:url,
+		success:function(res){
+			$('#massSelectArea').html(res);			
 		}
 	})
 })

@@ -33,7 +33,8 @@ class CreateInventoryRequest extends Request
         return [
             'title' => 'required',
             'sku' => 'required|unique:inventories,sku',
-            // 'sale_price' => 'required|numeric|min:0',
+            'sale_price' => 'required|numeric|min:0',
+            'textile' => 'required',
             'offer_price' => 'nullable|numeric',
             'available_from' => 'nullable|date',
             'offer_start' => 'nullable|date|required_with:offer_price',

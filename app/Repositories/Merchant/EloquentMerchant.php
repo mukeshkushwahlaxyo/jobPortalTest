@@ -5,6 +5,7 @@ namespace App\Repositories\Merchant;
 use Auth;
 use App\Role;
 use App\User;
+use App\MerchantProfile;
 use Illuminate\Http\Request;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
@@ -37,7 +38,8 @@ class EloquentMerchant extends EloquentRepository implements BaseRepository, Mer
     public function store(Request $request)
     {
         $merchant = parent::store($request);
-
+        $profile['user_id'] = $merchant->id;        
+        MerchantProfile::create($profile);
         $this->saveAdrress($request->all(), $merchant);
 
         if ($request->hasFile('image')) {

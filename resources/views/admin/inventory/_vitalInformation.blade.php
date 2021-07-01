@@ -51,7 +51,7 @@
           <div class="form-group">
             {!! Form::label('condition_note', trans('app.form.condition_note'), ['class' => 'with-help']) !!}
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.seller_condition_note') }}"></i>
-            {!! Form::text('condition_note', isset($inventory) ?  $inventory->condition_note: Null, ['class' => 'form-control input-sm', 'placeholder' => trans('app.placeholder.condition_note')]) !!}
+            {!! Form::text('condition_note', isset($inventory) ?  $inventory->condition_note: Null, ['class' => 'form-control input-sm', 'required','placeholder' => trans('app.placeholder.condition_note')]) !!}
             <div class="help-block with-errors"></div>
           </div>
         </div>
@@ -64,7 +64,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_start') }}"></i>
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-              {!! Form::text('offer_start', isset($inventory) ?  $inventory->offer_start : null, ['class' => 'form-control datetimepicker', 'placeholder' => trans('app.placeholder.offer_start')]) !!}
+              {!! Form::text('offer_start', isset($inventory) ?  $inventory->offer_start : null, ['class' => 'form-control datetimepicker','required' ,'placeholder' => trans('app.placeholder.offer_start')]) !!}
             </div>
             <div class="help-block with-errors"></div>
           </div>
@@ -76,7 +76,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_end') }}"></i>
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-              {!! Form::text('offer_end', isset($inventory) ?  $inventory->offer_end : null, ['class' => 'form-control datetimepicker', 'placeholder' => trans('app.placeholder.offer_end')]) !!}
+              {!! Form::text('offer_end', isset($inventory) ?  $inventory->offer_end : null, ['class' => 'form-control datetimepicker', 'required','placeholder' => trans('app.placeholder.offer_end')]) !!}
             </div>
             <div class="help-block with-errors"></div>
           </div>
@@ -88,7 +88,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_end') }}"></i>
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-              {!! Form::text('available_from', isset($inventory) ?  $inventory->available_from :null, ['class' => 'form-control datetimepicker', 'placeholder' => trans('app.placeholder.available_from')]) !!}
+              {!! Form::text('available_from', isset($inventory) ?  $inventory->available_from :null, ['class' => 'form-control datetimepicker', 'required','placeholder' => trans('app.placeholder.available_from')]) !!}
             </div>
             <div class="help-block with-errors"></div>
           </div>
@@ -102,7 +102,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sale_price') }}"></i>
             <div class="input-group">
               <span class="input-group-addon">{{ config('system_settings.currency_symbol') ?: '$' }}</span>
-              <input name="sale_price" value="{{ isset($inventory) ? $inventory->sale_price : Null }}" type="number" min="{{ $product->min_price }}" {{ $product->max_price ? ' max="'. $product->max_price .'"' : '' }} step="any" placeholder="{{ trans('app.placeholder.sale_price') }}" class="form-control" required="required">
+              <input required name="sale_price" value="{{ isset($inventory) ? $inventory->sale_price : Null }}" type="number" min="{{ $product->min_price }}" {{ $product->max_price ? ' max="'. $product->max_price .'"' : '' }} step="any" placeholder="{{ trans('app.placeholder.sale_price') }}" class="form-control" required="required">
             </div>
             <div class="help-block with-errors"></div>
           </div>
@@ -113,7 +113,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_price') }}"></i>
             <div class="input-group">
               <span class="input-group-addon">{{ config('system_settings.currency_symbol') ?: '$' }}</span>
-              {!! Form::number('offer_price',isset($inventory) ?  $inventory->offer_price : null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('app.placeholder.offer_price')]) !!}
+              {!! Form::number('offer_price',isset($inventory) ?  $inventory->offer_price : null, ['class' => 'form-control', 'step' => 'any', 'required','placeholder' => trans('app.placeholder.offer_price')]) !!}
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.offer_price') }}"></i>
             <div class="input-group">
               <span class="input-group-addon">{{ config('system_settings.currency_symbol') ?: '$' }}</span>
-              {!! Form::number('price_shipping',isset($inventory) ?  $inventory->price_shippin : null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('Price+Shipping')]) !!}
+              {!! Form::number('price_shipping',isset($inventory) ?  $inventory->price_shippin : null, ['class' => 'form-control', 'step' => 'any', 'required','placeholder' => trans('Price+Shipping')]) !!}
             </div>
           </div>
         </div>
@@ -145,7 +145,7 @@
           <div class="form-group">
             {!! Form::label('min_order_quantity', trans('app.form.min_order_quantity'), ['class' => 'with-help']) !!}
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.min_order_quantity') }}"></i>
-            {!! Form::number('min_order_quantity', isset($inventory) ? $inventory->min_order_quantity : 1, ['min' => 1, 'class' => 'form-control', 'placeholder' => trans('app.placeholder.min_order_quantity')]) !!}
+            {!! Form::number('min_order_quantity', isset($inventory) ? $inventory->min_order_quantity : 1, ['min' => 1, 'class' => 'form-control', 'required','placeholder' => trans('app.placeholder.min_order_quantity')]) !!}
           </div>
         </div>
       </div>

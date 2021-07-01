@@ -195,7 +195,6 @@ trait Imageable {
 		if (! $image) {
 			$image = $this->image;
 		}
-
 		if (optional($image)->path) {
 	    	Storage::delete($image->path);
 			Storage::deleteDirectory(image_cache_path($image->path));

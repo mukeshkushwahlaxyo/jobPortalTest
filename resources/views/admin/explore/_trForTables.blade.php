@@ -11,12 +11,12 @@
 		<td>{{$Post->description}}</td>
 		<td>{{date('d-m-Y',strtotime($Post->created_at))}}</td>
 		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>{{count($Post->like)}}</td>
+		<td>{{count($Post->share)}}</td>
+		<td>{{count($Post->comments)}}</td>
 		<td>
-			<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attribute.massTrash') }}" class="massAction " data-doafter="reload"><i class="fa fa-trash"></i> {{ trans('app.trash') }}</a>
-			<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attribute.massDestroy') }}" class="massAction " data-doafter="reload"><i class="fa fa-times"></i> {{ trans('app.delete_permanently') }}</a>
+			<a href="javascript:void(0)" data-link="{{ url('admin/explore/edit',$Post->id) }}" class="ajax-modal-btn" data-doafter="reload"><i class="fa fa-pencil-square-o"></i> </a>
+			<a href="javascript:void(0)" data-link="{{ url('admin/explore/deletePost',$Post->id) }}" class="delete" data-doafter="reload"><i class="fa fa-times"></i> </a>
 		</td>
 	</tr>
 @endforeach

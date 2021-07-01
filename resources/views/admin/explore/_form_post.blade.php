@@ -51,5 +51,32 @@
     </div>
     </div>
 </div>
-
-<p class="help-block">* {{ trans('app.form.required_fields') }}</p>
+<div class="row">
+    <div class=" col-md-12" style="margin-top:20px;">
+        <a id="tagButton" >Add<i style="margin-left: 5px;" class="fa fa-plus"></i></a>
+    </div>
+</div>
+<div class="sublist_parent row hidden" id ="categoryPost" style="margin-top: 20px;">
+    <div class="col-md-12 field_wrapper" style="margin-top:10px;">
+         {!! Form::label('Category', trans('Category').'*', ['class' => 'with-help']) !!}
+        <div class="">
+          <select id='caterory_id' class="form-control select2-normal " placeholder="Select" >
+            <option></option>
+            @foreach($category as $key => $cat)
+                <option  value="{{$cat->id}}">{{$cat->name}}</option>
+            @endforeach 
+          </select>
+        </div>
+        <div class="help-block with-errors"></div>  
+    </div>
+    <div class="col-md-12">
+       {!! Form::label('Product', trans('Product').'*', ['class' => 'with-help']) !!}
+        <div >
+          <select id="product_id" name='product_id' class="form-control select2-normal " placeholder="Select" >
+            <option></option>
+            
+          </select>
+        </div>
+        <div class="help-block with-errors"></div>
+    </div>
+</div>

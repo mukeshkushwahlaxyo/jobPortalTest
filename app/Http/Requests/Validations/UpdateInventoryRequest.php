@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Validations;
 
 use App\Http\Requests\Request;
+use App\Inventory;
 
 class UpdateInventoryRequest extends Request
 {
@@ -31,19 +32,24 @@ class UpdateInventoryRequest extends Request
         }
 
         $id = $this->route('inventory'); //Current model ID
+        $validate = [
+                    'sku' => 'required|composite_unique:inventories,sku, '.$id,
+                    'title' => 'required',
+                    // 'sale_price' => 'required|numeric',
+                    'offer_price' => 'nullable|numeric',
+                    'textile' => 'nullable',
+                    'available_from' => 'nullable|date',
+                    'offer_start' => 'nullable|date|required_with:offer_price',
+                    'offer_end' => 'nullable|date|required_with:offer_price|after:offer_start',
+                    // 'slug' => 'required|composite_unique:inventories,slug, '.$id,
+                    'image' => 'mimes:jpg,jpeg,png,gif',
+                ];
 
-        return [
-            'sku' => 'required|composite_unique:inventories,sku, '.$id,
-            'title' => 'required',
-            // 'sale_price' => 'required|numeric',
-            'offer_price' => 'nullable|numeric',
-            'textile' => 'nullable',
-            'available_from' => 'nullable|date',
-            'offer_start' => 'nullable|date|required_with:offer_price',
-            'offer_end' => 'nullable|date|required_with:offer_price|after:offer_start',
-            // 'slug' => 'required|composite_unique:inventories,slug, '.$id,
-            'image' => 'mimes:jpg,jpeg,png,gif',
-        ];
+        $inventry = Inventory::where('id',$id)->where('sku',$this->input('sku'))->first();    
+        if($inventry !== null){
+            unset($validate['sku']);
+        }
+        return $validate;
     }
 
    /**

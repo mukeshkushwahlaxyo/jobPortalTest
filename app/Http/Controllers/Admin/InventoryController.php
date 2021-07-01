@@ -120,6 +120,7 @@ class InventoryController extends Controller
      */
     public function store(CreateInventoryRequest $request)
     {
+        // dd($request); 
       
         $this->authorize('create', \App\Inventory::class); // Check permission
 
@@ -141,7 +142,6 @@ class InventoryController extends Controller
      */
     public function storeWithVariant(CreateInventoryWithVariantRequest $request)
     {
-        // dd($request); 
         $this->inventory->storeWithVariant($request);
 
         return redirect()->back()->with('success', trans('messages.created', ['model' => $this->model]));
@@ -420,7 +420,7 @@ class InventoryController extends Controller
         return 'Data Save Successfully...';
        }
        else{
-        return 'Please Try Again...';
+        return 'There is no values added on category please add the values....';
         }
     }
 
@@ -429,16 +429,20 @@ class InventoryController extends Controller
         $ids = $request->ids;
         $attrID = $request->attrID;
         $attrSublistID = $request->attrSublistID;
-        $selectedalueIds = [];
+        $selectedalueIds = [0];
+        $category = $this->inventory->getCategory($id);
        
         $attributeValue =$this->inventory->getValuesOfCategory($id);
         $selectedValue =$this->inventory->getSelectedValue($attrID,$attrSublistID);
-        foreach($selectedValue as $values){
-            $selectedalueIds[]  = $values->attrValue_id;      
+        if(count($selectedValue) > 0){
+            foreach($selectedValue as $values){
+                $selectedalueIds[]  = $values->attrValue_id;      
+            }
         }
+        // dd($attributeValue);
         // dd(count($attributeValue));
        if(count($attributeValue)===0 ){
-           return false;
+           return '<div style="margin-top:30px;">There is no values added on "'.$category->name.'" category please add the values....</div>';
        }
         return view('admin.inventory._attributeValueList',compact('attributeValue','ids','selectedalueIds'));
     }

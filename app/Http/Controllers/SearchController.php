@@ -19,14 +19,14 @@ class SearchController extends Controller
     public function findProduct(Request $request)
     {
         $term = $request->input('q');
-
         $results = [];
 
         if(strlen($term) < 3) {
             return Response::json($results);
         }
 
-        $query = Product::search($term)->where('active', 1);
+        $query = Product::where('name', 'LIKE', '%' . $term . '%')->orWhere('gtin', 'LIKE', '%' . $term . '%')->where('active', 1);
+
 
         if(! $request->user()->shop->canUseSystemCatalog()) {
             $query->where('shop_id', $request->user()->merchantId());
