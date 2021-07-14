@@ -27,6 +27,8 @@ class Category extends BaseModel
                     'slug',
                     'description',
                     'active',
+                    'type',
+                    'is_group',
                     'order',
                     'featured',
                     'meta_title',

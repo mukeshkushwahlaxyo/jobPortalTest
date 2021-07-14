@@ -9,8 +9,8 @@
 	        @include('admin.banner._form')
         </div>
         <div class="modal-footer">
-            {!! Form::submit(trans('app.form.save'), ['class' => 'btn btn-flat btn-new']) !!}
+            {!! Form::submit(trans('app.form.save'), ['class' => 'btn btn-flat btn-new float-right createbtn']) !!}
         </div>
         {!! Form::close() !!}
-    </div> <!-- / .modal-content -->
+    </div> <!-- / .modal-content --> 
 </div> <!-- / .modal-dialog -->

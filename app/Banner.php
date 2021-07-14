@@ -27,8 +27,10 @@ class Banner extends BaseModel
                     'link_label',
                     'bg_color',
                     'group_id',
+                    'group_type',
                     'columns',
                     'order',
+                    'mobile_order',
                 ];
 
     /**

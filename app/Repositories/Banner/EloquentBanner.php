@@ -3,6 +3,7 @@
 namespace App\Repositories\Banner;
 
 use App\Banner;
+use App\BannerGroup;
 use Illuminate\Http\Request;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
@@ -35,5 +36,13 @@ class EloquentBanner extends EloquentRepository implements BaseRepository, Banne
         foreach ($ids as $id) {
             $this->destroy($id);
         }
+    }
+
+    public function getGroupType(){
+        return BannerGroup::select('type_name','type')->groupBy('type')->get();
+    }
+
+    public function getGroups($type){
+        return BannerGroup::where('type',$type)->get();
     }
 }

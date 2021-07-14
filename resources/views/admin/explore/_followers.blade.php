@@ -1,36 +1,64 @@
-<div class="card card-custom-table bg-white border-white border-0" style="margin-top:50px">	
-		<table class="table table-hover table-2nd-no-sort dataTable" id="sortable" >
-	        <thead>
-		        <tr>
-		            <th width="7px">{{ trans('app.#') }}</th>
-			        <th>{{ trans('Image') }}</th>
-			        <th>{{ trans('Name') }}</th>
-			        <th>{{ trans('Phone') }}</th>
-			        <th>{{ trans('Email') }}</th>				        
-			        <th>{{ trans('app.option') }}</th>
-		        </tr>
-	        </thead>
-	        <tbody id="massSelectArea">
-	        	<?php $count =  1; ?>
-		        @foreach($follower as $Foll)
-		        	<tr>
-		        		<td>{{$count++}}</td>
-		        		<td>
-		        			@if($Foll->getFollowers->image)
-								<img
-								style="width: 57px;height: 54px;border-radius: 100%;"
-								 src="{{ get_storage_file_url($Foll->getFollowers->image->path, '') }}" alt="{{ trans('app.image') }}">
-							@endif
-		        		</td>
-		        		<td>{{$Foll->getFollowers->name}}</td>
-		        		<td></td>
-		        		<td>{{$Foll->getFollowers->email}}</td>
-		        		<td>
-		        			<a href="javascript:void(0)" data-link="{{ url('admin/explore/edit',$Foll->id) }}" class="massAction ajax-modal-btn" data-doafter="reload"><i class="fa fa-pencil-square-o"></i> </a>
-							<a href="javascript:void(0)" data-link="{{ route('admin.catalog.attribute.massDestroy') }}" class="massAction " data-doafter="reload"><i class="fa fa-times"></i></a>
-		        		</td>
-		        	</tr>
-		        @endforeach
-	        </tbody>
-		</table>
-	</div>
+<div class="row" style="margin-top: 50px"> 
+	@if(count($follower))
+		@foreach($follower as $Follwer)
+			<div class="col-md-3" style="margin-bottom: 20px;">
+				<div class="card card-custom bg-white border-white border-0">	
+					{{-- <div class="row"> --}}
+						{{-- <div class="col-md-12"> --}}
+						{{-- </div> --}}
+		          	<div class="card-body" style="overflow-y: auto">
+					</div>        
+		          		<div class="row" style="margin-left:0px !important; margin-right:0px !important;">
+				          	<div class="col-md-3" style=" margin-top: 4% !important;">
+				            	@if($Follwer->getFollowers->image)
+									<img style="
+											width:100% !important;
+											margin-left:5%;   
+											border-radius: 100%;
+											height: 59px;" 
+											src="{{ get_storage_file_url($Follwer->getFollowers->image->path,'') }}" class="" alt="{{ trans('app.image') }}"
+										>
+								@endif
+								
+				            </div>
+				          	<div class="col-md-6" style="margin-top: 5%;" >
+				          		<div style="
+									margin-left: 4%;
+									font-family: DM Sans;
+									font-style: normal;
+									font-weight: bold;
+									font-size: 16px;
+									line-height: 20px;
+									align-items: center;
+									color: #0A0A0A;
+									display: inline;
+									margin-top: 10px !important;
+
+									" class="customerName">{{$Follwer->getFollowers->name}}
+								</div>
+								<div style="
+									margin-left: 4%;
+									font-family: DM Sans;
+									font-style: normal;
+									font-size: 14px;
+									line-height: 20px;
+
+									" class="customerName">{{$Follwer->getFollowers->email}}
+								</div>
+				          	</div>
+			          		<div class="col-md-3 text-right">
+								<a class="deleteAny" reference-class="showContant" data-link="{{url('admin/explore/deleteFollowers',$Follwer->id)}}" ><i class="fa fa-trash"></i></a>
+							</div>	
+				        </div>    	
+		          </div>
+		          <div class="card-footer " >
+		          </div>
+		        </div>
+			</div>
+		@endforeach	
+	@else
+		<div class="col-md-12 text-center">
+			No record found..
+		</div>
+	@endif	
+</div>

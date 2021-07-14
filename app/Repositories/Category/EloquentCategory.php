@@ -28,6 +28,11 @@ class EloquentCategory extends EloquentRepository implements BaseRepository, Cat
         ->onlyTrashed()->get();
     }
 
+    public function customiseCategory()
+    {
+        return $this->model->where('type',1)->get();
+    }
+
     //Create Category
     public function store(Request $request)
     {

@@ -25,6 +25,9 @@ class ExploreRepostory extends EloquentRepository {
     	$data['description'] = $request->description;
     	$data['shop_id'] = $request->shop_id;
         $data['slug'] = $inventory->slug;
+        $data['product_id'] = $inventory->product_id;
+        $data['category_id'] = $request->category_id;
+        
         $post = Post::create($data);
 
        if ($request->hasFile('image')) {
@@ -46,7 +49,7 @@ class ExploreRepostory extends EloquentRepository {
 
     public function getReviews(){
         $shopId = Auth::user()->shop_id;
-        return CustomerReviews::with('customer.image')->where('shop_id',$shopId)->get();
+        return CustomerReviews::with('customer.image')->whereNull('deleted_at')->where('shop_id',$shopId)->get();
     }
 
     public function getFollowers(){
@@ -60,15 +63,18 @@ class ExploreRepostory extends EloquentRepository {
     }
 
     public function editPost($id){
-        return Post::find($id);
+        return Post::with(['product','category'])->find($id);
     }
 
     public function updatePost(Request $request,$id,$inventory){
-        // dd($inventory);
+
         $data['title'] = $request->title;
         $data['description'] = $request->description;
         $data['shop_id'] = $request->shop_id;
         $data['slug'] = $inventory->slug;
+        $data['product_id'] = $inventory->product_id;   
+        $data['category_id'] = $request->category_id;
+        
         Post::find($id)->update($data);   
         $post = Post::find($id);
 
@@ -158,7 +164,7 @@ class ExploreRepostory extends EloquentRepository {
 
     public function getCount($model){
         $shop_id = Auth::user()->shop_id;
-        return $model::where('shop_id',$shop_id)->count();
+        return $model::whereNull('deleted_at')->where('shop_id',$shop_id)->count();
     }
 }
 	

@@ -5,3 +5,4 @@
 Route::post('banner/massDestroy', 'BannerController@massDestroy')->name('banner.massDestroy')->middleware('demoCheck');
 // Route::delete('banner/emptyTrash', 'BannerController@emptyTrash')->name('banner.emptyTrash');
 Route::resource('banner', 'BannerController', ['except' => ['show']]);
+Route::get('banner/getGroups/{type}/{selected?}', 'BannerController@getGroups');

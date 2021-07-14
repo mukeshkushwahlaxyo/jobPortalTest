@@ -7,5 +7,7 @@
 	Route::post('explore/filter/', 'ExploreController@filter');
 	Route::get('editProfile/', 'ExploreController@editProfile');
 	Route::post('saveMerchantProfile/', 'ExploreController@saveMerchantProfile');
-	Route::get('explore/getProductByCategory/{catId}', 'ExploreController@getProductByCategory');
+	Route::get('explore/getProductByCategory/{catId}/{prodId?}', 'ExploreController@getProductByCategory');
 	Route::post('explore/deletePost/{postId}', 'ExploreController@deletepost');
+	Route::post('explore/deleteFollowers/{id}', 'ExploreController@deleteFollowers');
+	Route::post('explore/deleteReview/{id}', 'ExploreController@deleteReview');

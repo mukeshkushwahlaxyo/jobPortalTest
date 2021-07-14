@@ -7,6 +7,7 @@ use App\Shop;
 use App\State;
 use App\Banner;
 use App\Slider;
+use App\Option;
 use App\Product;
 use App\Country;
 use App\Manufacturer;
@@ -46,11 +47,20 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function banners()
+    public function banners($type)
     {
-        $banners = Banner::with(['featureImage'])->get();
+        // return($type);
+        $banners = Banner::with(['featureImage'])->where('group_type',$type)->orderBy('order', 'asc')->get()->groupBy('group_id')->toArray();
+        return json_encode($banners);
+    }
 
-        return BannerResource::collection($banners);
+    public function themeOption($type)
+    {   
+        if($type ==='mans'){
+            $options = Option::with(['getOptions.getCategory.image'])->where('type',$type)->get();
+        }
+        
+        return json_encode($options);
     }
 
     /**

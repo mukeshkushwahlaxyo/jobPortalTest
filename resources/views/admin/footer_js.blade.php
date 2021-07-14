@@ -1065,6 +1065,36 @@
 	  	if( $('#uploadBtn').length ){
 		    document.getElementById("uploadBtn").onchange = function () {
 		      document.getElementById("uploadFile").value = this.value;
+				var _URL = window.URL || window.webkitURL;
+				var groups = $('.gropus').val()
+				var order = $('.order').val()
+				var dimentionArray = getDimention(order,groups)
+			
+		    	if ((file = this.files[0])) {
+			        img = new Image();
+			        img.onload = function() {
+			        	// createbtn
+			            var dimention = (this.width.toString() + "x" + this.height.toString());
+			            alert(dimention)
+			        	if(dimention === dimentionArray){
+							$('.createbtn').removeClass('disabled')
+							$('#sizeImage').text('')
+			        	}
+			        	else{
+			        		$('#sizeImage').text('Please change the image resolution it should be '+dimentionArray)
+			        		if(!$('#bannerImage').attr('src')){
+								$('.createbtn').addClass('disabled')
+			        		}
+			        	}
+
+			        };
+			        img.onerror = function() {
+			            alert( "not a valid file: " + file.type);
+			        };
+			        img.src = _URL.createObjectURL(file);
+
+
+			    }
 		    };
 	  	}
 	  	if( $('#uploadBtn1').length ){

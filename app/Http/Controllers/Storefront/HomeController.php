@@ -39,12 +39,13 @@ class HomeController extends Controller
 
         //Trending categories
         if ($trending_categories = get_from_option_table('trending_categories', [])){
+            dd($trending_categories);
             $trending_categories = Category::whereIn('id', $trending_categories)
             ->with(['listings' => function($q){
                 return $q->available()->get()->take(config('system.popular.take.trending', 20));
             }])->get();
         }
-
+        dd($banners);
         //Featured Category Load With Images
         $featured_category = Category::featured()->get();
 

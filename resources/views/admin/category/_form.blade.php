@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-6 nopadding-right">
+  <div class="col-md-4 nopadding-right">
     <div class="form-group">
       {!! Form::label('name', trans('app.form.category_name').'*') !!}
       {!! Form::text('name', null, ['class' => 'form-control makeSlug', 'placeholder' => trans('app.placeholder.category_name'), 'required']) !!}
@@ -7,7 +7,15 @@
     </div>
   </div>
 
-  <div class="col-md-6 nopadding-left">
+  <div class="col-md-4 nopadding-right">
+    <div class="form-group">
+      {!! Form::label('is group', trans('is group').'*') !!}
+      {!! Form::select('is_group', ['1' => 'Yes', '0' => 'No'], null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), 'required']) !!}
+      <div class="help-block with-errors"></div>
+    </div>
+  </div>
+
+  <div class="col-md-4 nopadding-left">
     <div class="form-group">
       {!! Form::label('category_sub_group_id', trans('app.form.category_sub_group').'*') !!}
       {!! Form::select('category_sub_group_id', $catList , null, ['class' => 'form-control select2-categories', 'placeholder' => trans('app.placeholder.category_sub_group'), 'required']) !!}
@@ -17,7 +25,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6 nopadding-right">
+  <div class="col-md-3 nopadding-right">
     <div class="form-group">
       {!! Form::label('slug', trans('app.form.slug').'*', ['class' => 'with-help']) !!}
       <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.slug') }}"></i>
@@ -30,6 +38,13 @@
     <div class="form-group">
       {!! Form::label('active', trans('app.form.status').'*', ['class' => 'with-help']) !!}
       {!! Form::select('active', ['1' => 'Active', '0' => 'Inactive'], null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), 'required']) !!}
+      <div class="help-block with-errors"></div>
+    </div>
+  </div>
+  <div class="col-md-3 nopadding-right nopadding-left">
+    <div class="form-group">
+      {!! Form::label('type', trans('Category Type').'*', ['class' => 'with-help']) !!}
+      {!! Form::select('type', ['0' => 'For Product', '1' => 'For Inventory'], null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>

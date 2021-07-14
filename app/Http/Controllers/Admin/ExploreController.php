@@ -11,6 +11,8 @@ use App\Category;
 use App\Inventory;
 use App\Post;
 use App\Product;
+use App\CustomerReviews;
+use App\Followers;
 use Auth;
 
 class ExploreController extends Controller
@@ -45,7 +47,7 @@ class ExploreController extends Controller
   
     public function store(CreatePostRequest $request)
     {      
-        $inventory = Inventory::where('product_id',$request->product_id)->first();
+        $inventory = Inventory::with('product.categories')->where('product_id',$request->product_id)->first();
 
         $this->explore->saveData($request,$inventory);
         $post = $this->explore->getPosts();
@@ -66,7 +68,7 @@ class ExploreController extends Controller
 
     public function update(CreatePostRequest $request, $id)
     {
-        $inventory = Inventory::where('product_id',$request->product_id)->first();
+        $inventory = Inventory::with('product.categories')->where('product_id',$request->product_id)->first();
         $this->explore->updatePost($request,$id,$inventory);       
         $post = $this->explore->getPosts();
         return view('admin.explore._trForTables',compact('post')); 
@@ -108,10 +110,11 @@ class ExploreController extends Controller
         return view('admin.explore._product',compact('product'));
     }
 
-    public function getProductByCategory($id){
+    public function getProductByCategory($id,$prodId=''){
+
         $project = $this->explore->getProductByCategory($id); 
-        foreach($project as $Project){ ?>
-            <option value="<?php echo $Project->id; ?>"><?php echo $Project->name; ?></option>
+        foreach($project as $Project){  ?>
+            <option <?php if((int)$prodId === $Project->id) {echo'selected';}  ?> value="<?php echo $Project->id; ?>"><?php echo $Project->name; ?></option>
         <?php }
 
     }
@@ -122,7 +125,6 @@ class ExploreController extends Controller
     }
 
     public function saveMerchantProfile(MerchantProfile $request){     
-        // dd($request);         
         $merchant = $this->explore->saveMerchant($request);       
         return  $merchant; 
     }
@@ -132,4 +134,17 @@ class ExploreController extends Controller
         $post = $this->explore->getPosts();
         return view('admin.explore._trForTables',compact('post'));
     }
+
+    public function deleteFollowers($id){
+        Followers::find($id)->delete();
+        $follower = $this->explore->getFollowers();
+        return view('admin.explore._followers',compact('follower'));
+    }
+    public function deleteReview(Request $request,$id){
+        // dd($id);
+        CustomerReviews::find($id)->update(['deleted_at'=>date('Y-m-d H:i:s')]);
+        $review = $this->explore->getReviews();
+        return view('admin.explore._show_reviews',compact('review'));  
+    }
+    
 }

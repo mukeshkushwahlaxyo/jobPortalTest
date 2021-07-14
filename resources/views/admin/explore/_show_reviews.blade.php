@@ -2,7 +2,14 @@
 	@if(count($review))
 		@foreach($review as $Review)
 			<div class="col-md-3" style="margin-bottom: 20px;">
-				<div class="card card-custom bg-white border-white border-0">	        
+				<div class="card card-custom bg-white border-white border-0">	      
+						<div class="row">
+							<a class="deleteAny" reference-class="showContant" data-link="{{url('admin/explore/deleteReview',$Review->id)}}">
+								<div class="col-md-12 text-right " >
+									<i class="fa fa-trash mr-2" style="margin-right: 14px;"></i>
+								</div>
+							</a>	
+						</div>  
 		          <div class="card-body" style="overflow-y: auto">
 		          		<div class="">
 				          	<div class="review-image" style=" margin-top: 4% !important;">
@@ -30,7 +37,7 @@
 				            </div>
 				          	<div class="review-image" style="margin-left: 5% !important; margin-top: 5%;" >
 				          		@php
-				          			$count = 1;
+				          			$count = 0;
 				          		@endphp
 				          		@while( $count <= 5 )
 				          			@if($count < $Review->rating)

@@ -49,7 +49,8 @@ class BannerController extends Controller
      */
     public function create()
     {
-        return view('admin.banner._create');
+        $groupsType = $this->banner->getGroupType();
+        return view('admin.banner._create',compact('groupsType'));
     }
 
     /**
@@ -60,6 +61,7 @@ class BannerController extends Controller
      */
     public function store(CreateBannerRequest $request)
     {
+        // dd($request->all());
         $this->banner->store($request);
 
         return back()->with('success', trans('messages.created', ['model' => $this->model]));
@@ -73,7 +75,8 @@ class BannerController extends Controller
      */
     public function edit(Banner $banner)
     {
-        return view('admin.banner._edit', compact('banner'));
+        $groupsType = $this->banner->getGroupType();
+        return view('admin.banner._edit', compact('banner','groupsType'));
     }
 
     /**
@@ -120,5 +123,14 @@ class BannerController extends Controller
         }
 
         return back()->with('success', trans('messages.deleted', ['model' => $this->model]));
+    }
+
+    public function getGroups($type,$selected=''){
+        $groups = $this->banner->getGroups($type);  ?>
+            <option>Select..</option>
+        <?php   foreach($groups as $Groups){ ?>
+                    <option <?php echo $selected === $Groups->id ? 'selected':''; ?>  value="<?php echo $Groups->id; ?>"><?php echo $Groups->name; ?></option>
+                <?php 
+                }
     }
 }

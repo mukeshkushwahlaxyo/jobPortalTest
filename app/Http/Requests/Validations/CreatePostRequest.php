@@ -30,6 +30,7 @@ class CreatePostRequest extends Request
            'title' => 'required',
            'description' => 'required',         
            'image' => 'mimes:jpg,jpeg,png',
+           'category_id'=>'nullable'
         ];
     }
 

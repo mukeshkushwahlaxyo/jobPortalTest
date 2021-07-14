@@ -15,15 +15,14 @@
 		<div class="col-md-7"></div>
 	</div>		
 	<div class="card card-custom-table bg-white border-white border-0">	
-		<table class="table table-hover table-2nd-no-sort dataTable" id="sortable" style="margin-left: 50px;">
+		<table class="table table-hover table-2nd-no-sort dataTable" id="sortable" style="padding-left: 50px;">
 	        <thead>
 		        <tr>
 		            <th width="7px">{{ trans('app.#') }}</th>
 			        <th>{{ trans('Image') }}</th>
 			        <th>{{ trans('Title Of Post') }}</th>
 			        <th>{{ trans('Description') }}</th>
-			        <th>{{ trans('Date') }}</th>				        
-		       		<th>{{ trans('Price') }}</th>
+			        <th>{{ trans('Date') }}</th>		
 			        <th>{{ trans('Likes') }}</th>
 			        <th>{{ trans('Share') }}</th>
 			        <th>{{ trans('Comment') }}</th>				        
@@ -43,7 +42,6 @@
 		        		<td>{{$Post->title}}</td>
 		        		<td>{{$Post->description}}</td>
 		        		<td>{{date('d-m-Y',strtotime($Post->created_at))}}</td>
-		        		<td></td>
 		        		<td>{{count($Post->like)}}</td>
 		        		<td>{{count($Post->share)}}</td>
 		        		<td>{{count($Post->comments)}}</td>

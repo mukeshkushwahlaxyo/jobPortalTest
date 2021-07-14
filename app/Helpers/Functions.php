@@ -1747,7 +1747,6 @@ if (! function_exists('get_from_option_table')) {
 
         if ($record) {
             $value = $record->option_value;
-
             return is_serialized($value) ? unserialize($value) : $value;
         }
 

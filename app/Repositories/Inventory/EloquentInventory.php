@@ -5,6 +5,7 @@ namespace App\Repositories\Inventory;
 use Auth;
 use App\Product;
 use App\Inventory;
+use App\InventoryProduct;
 use App\InventoryVariant;
 use App\InventoryVariantAttribute;
 use App\InventoryCustomise;
@@ -49,6 +50,7 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         return $inventory->get();
     }
 
+ 
     public function trashOnly()
     {
         if (! Auth::user()->isFromPlatform()) {
@@ -85,61 +87,13 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
     }
 
     public function find($id){
-        return Inventory::with(['getCustomise.attributeSublist','getCustomise.attribute','getVariant'])->find($id);
+        return Inventory::with(['getCustomise.attributeSublist','getCustomise.attribute','getVariant','inventoryProduct'])->find($id);
     }
 
     public function storeWithVariant(Request $request)
     {   
         $product = json_decode($request->input('product'));
-        // dd($request->all());
-
-        // // Common informations
-        // $commonInfo['user_id'] = $request->user()->id; //Set user_id
-
-        // $commonInfo['shop_id'] = $request->user()->merchantId(); //Set shop_id
-
-        // $commonInfo['title'] = $request->has('title') ? $request->input('title') : $product->name;
-
-        // $commonInfo['product_id'] = $product->id;
-
-        // $commonInfo['brand'] = $product->brand;
-
-        // $commonInfo['warehouse_id'] = $request->input('warehouse_id');
-
-        // $commonInfo['supplier_id'] = $request->input('supplier_id');
-
-        // $commonInfo['shipping_width'] = $request->input('shipping_width');
-
-        // $commonInfo['shipping_height'] = $request->input('shipping_height');
-
-        // $commonInfo['shipping_depth'] = $request->input('shipping_depth');
-
-        // $commonInfo['shipping_weight'] = $request->input('shipping_weight');
-
-        // $commonInfo['available_from'] = $request->input('available_from');
-
-        // $commonInfo['active'] = $request->input('active');
-
-        // $commonInfo['tax_id'] = $request->input('tax_id');
-
-        // $commonInfo['textile'] = $request->input('textile');
-
-        // $commonInfo['min_order_quantity'] = $request->input('min_order_quantity');
-
-        // $commonInfo['alert_quantity'] = $request->input('alert_quantity');
-
-        // $commonInfo['description'] = $request->input('description');
-
-        // $commonInfo['condition_note'] = $request->input('condition_note');
-
-        // $commonInfo['key_features'] = $request->input('key_features');
-
-        // $commonInfo['linked_items'] = $request->input('linked_items');
-
-        // $commonInfo['meta_title'] = $request->input('meta_title');
-
-        // $commonInfo['meta_description'] = $request->input('meta_description');
-        // Arrays
+       
         $skus = $request->input('sku');
 
         $conditions = $request->input('condition');
@@ -243,6 +197,14 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
     public function update(Request $request, $id)
     {
         $inventory = parent::update($request, $id);
+        InventoryProduct::where('inventory_id',$id)->delete();
+        if(isset($request->products_id)){
+            foreach($request->products_id as $key => $products){
+                $data['inventory_id'] = $id;
+                $data['product_id'] = $products;
+                InventoryProduct::create($data);
+            }
+        }
 
         $this->setAttributes($inventory, $request->input('variants'));
 
@@ -305,6 +267,19 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
         }])->findOrFail($id);
     }
 
+    public function inventoryCategory($id){
+     return Inventory::with(['category'=>function($query){
+             $query->select('id','name');
+        }])->findOrFail($id);   
+    }
+
+    public function customiseCategory(){
+        return Category::where('type',1)->get();
+    }
+
+    public function getCustomiseCategory(){
+        return Category::where('type',1)->get();
+    }
     /**
      * Set attribute pivot table for the product variants like color, size and more
      * @param obj $inventory

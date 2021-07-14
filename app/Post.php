@@ -17,13 +17,22 @@ class Post extends Model
      *
      * @var array
      */
-    protected $fillable = ['title', 'description','shop_id','slug'];
+    protected $guarded = [];
    
     /**
      * The has Many Relationship
      *
      * @var array
      */
+
+    public function product(){
+        return $this->belongsTo(Product::class,'product_id','id');
+    }
+
+    public function category(){
+        return $this->belongsTo(Category::class,'category_id','id');
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class)->whereNull('parent_id');

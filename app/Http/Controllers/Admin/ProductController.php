@@ -145,7 +145,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, $id)
     {
-        // dd($request);
+        // dd($request->all());
         $product = $this->product->update($request, $id);
 
         $this->authorize('update', $product); // Check permission

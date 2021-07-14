@@ -118,7 +118,7 @@ class EloquentAttributeValue extends EloquentRepository implements BaseRepositor
     }
 
     public function allAttribute(){
-        return Attribute::all();
+        return Attribute::with(['productType'])->get();
     }
 
 }

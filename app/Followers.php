@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Followers extends Model
 {
+    use SoftDeletes;
+    
     protected $table = 'followers';
     protected $guarded = [];
 

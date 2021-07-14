@@ -11,7 +11,7 @@
       </div> <!-- /.box-header -->
       <div class="box-body">
         <div class="row">
-          <div class="col-md-9 nopadding-right">
+          <div class="col-md-6 nopadding-right">
             <div class="form-group">
               {!! Form::label('name', trans('app.form.name').'*', ['class' => 'with-help']) !!}
               <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.product_name') }}"></i>
@@ -25,6 +25,15 @@
               {!! Form::label('active', trans('app.form.status').'*', ['class' => 'with-help']) !!}
               <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.product_active') }}"></i>
               {!! Form::select('active', ['1' => trans('app.active'), '0' => trans('app.inactive')], !isset($product) ? 1 : null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), 'required']) !!}
+              <div class="help-block with-errors"></div>
+            </div>
+          </div>
+
+          <div class="col-md-3 nopadding-left">
+            <div class="form-group">
+              {!! Form::label('active', trans('Is Social Media').'*', ['class' => 'with-help']) !!}
+              <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.product_active') }}"></i>
+              {!! Form::select('social_media', ['1' => trans('app.active'), '0' => trans('app.inactive')], !isset($product) ? 1 : null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), 'required']) !!}
               <div class="help-block with-errors"></div>
             </div>
           </div>

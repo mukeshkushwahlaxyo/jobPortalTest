@@ -35,7 +35,7 @@
                       <input type="hidden" id="variantEditData" data-array="{{json_encode($array)}}">
                     </li>
                   @endif 
-                  @if($product->isCustomise ) 
+                  @if($product->isCustomise ==='1' || $product->isCustomise ==='on' ) 
                     <li class="nav-item ">
                       <a class="nav-link show_customise_property" targetID='customise_property' href="#">Customise Property</a>
                       <input type="hidden" id="CustomiseIds" data-value="{{isset($attrID) ?  $attrID : ''}}">
@@ -54,7 +54,7 @@
 
               $title_classes = isset($inventory) ? 'form-control' : 'form-control makeSlug';
             @endphp
-
+-
             {{ Form::hidden('product_id', $product->id) }}
             {{ Form::hidden('brand', $product->brand) }}
             <div class="hidden customise_property">

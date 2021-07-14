@@ -6,7 +6,7 @@
 		<div class="col-md-5">
 			<div class="form-group" style="margin-top: 15px;">
 	            {{-- {!! Form::label('Attribute', ['class' => 'with-help']) !!} --}}
-	            <select class="form-control select2-set_attribute attributeCstom" name="attributeId[]" multiple="true" placeholder="{{'dfdfdfdfdf' }}">
+	            <select class="form-control select2-set_attribute attributeCstom" name="attributeId[]" multiple="true" >
 	                @foreach($attributesCustom as $attributeCustome)                    
 		                @if(count($attributeCustome->attributeSublist))
 		                	@foreach($attributeCustome->attributeSublist as $Sublist)
@@ -26,7 +26,7 @@
 		<div class="col-md-2"></div>
 		<div class="col-md-5">
 
-			<input type="hidden" name="product_id" value="{{isset($inventory) ? $inventory->product_id:''}}">
+			<input type="hidden" name="inventory_id" value="{{isset($inventory) ? $inventory->id:''}}">
 			<div class="form-group" style="margin-top: 15px;">
 	          	<button class="btn btn-default">Attribute Value</button>
 	        </div>

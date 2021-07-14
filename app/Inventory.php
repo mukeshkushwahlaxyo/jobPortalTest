@@ -93,6 +93,8 @@ class Inventory extends BaseModel
                         'slug',
                         'meta_title',
                         'meta_description',
+                        'category_id',
+                        'price_shipping',
                         'active'
                     ];
 
@@ -140,6 +142,16 @@ class Inventory extends BaseModel
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    public function category()
+    {
+        return $this->hasMany(Category::class,'id','category_id');
+    }
+
+    public function inventoryProduct()
+    {
+        return $this->hasMany(InventoryProduct::class,'inventory_id','id');
     }
 
     /**

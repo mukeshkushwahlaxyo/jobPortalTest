@@ -16,38 +16,49 @@
 	    		</thead>
 	    		<tbody>
 	    			<tr>
-	    				<th>@lang('app.featured_categories')</th>
+	    				<th>Trending</th>
 	    				<td>
-	    					@foreach($featured_categories as $category)
-			    				<span class="label label-outline">{{ $category }}</span>
+	    					@foreach($trending_categories as $trending)
+			    				<span class="label label-outline">{{ $trending->getCategory->name }}</span>
 	    					@endforeach
 	    				</td>
 	    				<td>
-	    					<a href="javascript:void(0)" data-link="{{ route('admin.appearance.featuredCategories') }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
+	    					<a href="javascript:void(0)" data-link="{{ url('/admin/appearance/theme/edit_designer_home',2) }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
+	    				</td>
+	    			</tr>
+	    			<tr>
+	    				<th>Top Designer</th>
+	    				<td>
+	    					@foreach($top_designer as $designer)
+			    				<span class="label label-outline">{{ $designer->getMerchant->name }}</span>
+	    					@endforeach
+	    				</td>
+	    				<td>
+	    					<a href="javascript:void(0)" data-link="{{ url('/admin/appearance/theme/EditDesignerOption',7) }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
+	    				</td>
+	    			</tr>
+	    			<tr>
+	    				<th>Suit Wear</th>
+	    				<td>
+	    					@foreach($suit_wear as $SuitWear)
+			    				<span class="label label-outline">{{ $SuitWear->getCategory->name }}</span>
+	    					@endforeach
+	    				</td>
+	    				<td>
+	    					<a href="javascript:void(0)" data-link="{{ url('/admin/appearance/theme/edit_designer_home',6) }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
 	    				</td>
 	    			</tr>
 					<tr>
-	    				<th>@lang('app.featured_brands')</th>
+	    				<th>Hand Made Cloth</th>
 	    				<td>
-	    					@foreach($featured_brands as $brand)
-			    				<span class="label label-outline">{{ $brand }}</span>
+	    					@foreach($hand_made_cloth as $handMade)
+			    				<span class="label label-outline">{{ $handMade->getCategory->name }}</span>
 	    					@endforeach
 	    				</td>
 	    				<td>
-	    					<a href="javascript:void(0)" data-link="{{ route('admin.appearance.featuredBrands') }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
+	    					<a href="javascript:void(0)" data-link="{{ url('/admin/appearance/theme/edit_designer_home',5) }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
 	    				</td>
-	    			</tr>
-					<tr>
-	    				<th>@lang('app.trending_now_categories')</th>
-	    				<td>
-	    					@foreach($trending_categories as $category)
-			    				<span class="label label-outline">{{ $category }}</span>
-	    					@endforeach
-	    				</td>
-	    				<td>
-	    					<a href="javascript:void(0)" data-link="{{ route('admin.appearance.trendingNow') }}" class="ajax-modal-btn btn btn-sm btn-default flat"><i class="fa fa-edit"></i> @lang('app.edit')</a>
-	    				</td>
-	    			</tr>
+	    			</tr>					
 	    		</tbody>
 	    	</table>
 	    </div> <!-- /.box-body -->

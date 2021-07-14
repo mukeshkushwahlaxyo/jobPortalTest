@@ -7,6 +7,7 @@ use App\Repositories\Attribute\AttributeRepository;
 use App\Repositories\Category\CategoryRepository;
 use App\Http\Requests\Validations\CreateAttributeValueRequest;
 use App\Http\Requests\Validations\UpdateAttributeValueRequest;
+use App\Category;
 
 class AttributeValueController extends Controller
 {
@@ -36,7 +37,7 @@ class AttributeValueController extends Controller
     public function create($id = null)
     {
         $attribute = $this->attribute_value->allAttribute();
-        $category = $this->category->all();
+        $category = $this->category->customiseCategory();
         $attributeList = $this->attribute->all();
         return view('admin.attribute-value._create', compact('attribute','category','attributeList'));
     }

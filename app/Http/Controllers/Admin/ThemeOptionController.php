@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Category;
 use App\Http\Requests\Validations\UpdateTrendingNowCategoryRequest;
 use App\Manufacturer;
+use App\OptionCategory;
+use App\Option;
+use App\Merchant;
+use App\DesignerOption;
 use Carbon\Carbon;
 use App\Common\Authorizable;
 use Illuminate\Support\Facades\DB;
@@ -23,16 +28,22 @@ class ThemeOptionController extends Controller
      */
     public function index()
     {
+        // dd('sdsds');
         // $storeFrontThemes = collect($this->storeFrontThemes());
         // $sellingThemes = collect($this->sellingThemes());
         // return view('admin.theme.index', compact('storeFrontThemes', 'sellingThemes'));
-        $featured_brands = Manufacturer::whereIn('id', get_from_option_table('featured_brands', []) ?? [])
-            ->get()->pluck('name', 'id')->toArray();
+        // dd( get_from_option_table('featured_brands', []));
+        // $featured_brands = Manufacturer::whereIn('id', get_from_option_table('featured_brands', []) ?? [])
+        //     ->get()->pluck('name', 'id')->toArray();
+        // $trending_categories = Category::whereIn('id', get_from_option_table('trending_categories', []) ?? [])
+        //     ->get()->pluck('name', 'id')->toArray();
 
-        $trending_categories = Category::whereIn('id', get_from_option_table('trending_categories', []) ?? [])
-            ->get()->pluck('name', 'id')->toArray();
 
-        return view('admin.theme.options', compact('featured_brands', 'trending_categories'));
+        $trending_categories = OptionCategory::with('getCategory')->where('option_id',2)->get();            
+        $hand_made_cloth = OptionCategory::with('getCategory')->where('option_id',5)->get();            
+        $suit_wear = OptionCategory::with('getCategory')->where('option_id',6)->get();            
+        $top_designer = DesignerOption::with('getMerchant')->where('option_id',7)->get();            
+        return view('admin.theme.options', compact('hand_made_cloth', 'trending_categories','suit_wear','top_designer'));
 
     }
 
@@ -42,7 +53,7 @@ class ThemeOptionController extends Controller
      */
     public function featuredCategories()
     {
-        $categories = Category::all();
+        $categories = Category::where('type',1)->get();
         $category = [];
         foreach ($categories as $key => $cat){
             array_push($category, [$cat->id => $cat->name.' | '. $cat->subGroup->name]);
@@ -52,6 +63,49 @@ class ThemeOptionController extends Controller
         return view('admin.theme._edit_featured_categories', compact('category'));
     }
 
+    public function EditDesignerHome($id)
+    {
+        $categories = Category::where('type',1)->get();
+        $categoryOptions = OptionCategory::select('category_id')->where('option_id',$id)->get();       
+        $catArray =  [];
+        foreach($categoryOptions as $option){
+            $catArray[] =  $option->category_id;
+        }
+        
+        $route = 'admin.appearance.UpdateDesignerHome';
+        return view('admin.theme.edit_designer_home', compact('categories','catArray','route','id'));
+    }
+
+    public function EditDesignerOption($id)
+    {
+        $categories = Merchant::all();
+        $categoryOptions = DesignerOption::select('marchent_id')->where('option_id',$id)->get();       
+        $catArray =  [];
+        foreach($categoryOptions as $option){
+            $catArray[] =  $option->marchent_id;
+        }
+        $route = 'admin.appearance.UpdateDesignerOption';
+        return view('admin.theme.edit_designer_home', compact('categories','catArray','route','id'));
+    }
+
+    public function UpdateDesignerOption(Request $request,$id){
+        DesignerOption::where('option_id',$id)->delete();
+       foreach($request->designer_home as $key  => $catId){
+            DesignerOption::create(['marchent_id'=>$catId,'option_id'=>$id]);
+       }
+       return redirect()->route('admin.appearance.theme.option', '#settings-tab')
+        ->with('success', 'Update Successfully...');
+    }
+
+    public function UpdateDesignerHome(Request $request,$id)
+    {
+       OptionCategory::where('option_id',$id)->delete();
+       foreach($request->designer_home as $key  => $catId){
+            OptionCategory::create(['category_id'=>$catId,'option_id'=>$id]);
+       }
+       return redirect()->route('admin.appearance.theme.option', '#settings-tab')
+        ->with('success', 'Update Successfully...');
+    }
 
     /**
      * Update the specified resource in storage.

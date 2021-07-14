@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Common\Authorizable;
 use App\Http\Controllers\Controller;
 use App\Repositories\Inventory\InventoryRepository;
+use App\Repositories\Product\ProductRepository;
 use App\Http\Requests\Validations\AddInventoryRequest;
 use App\Http\Requests\Validations\ProductSearchRequest;
 use App\Http\Requests\Validations\CreateInventoryRequest;
@@ -22,17 +23,19 @@ class InventoryController extends Controller
     private $model;
 
     private $inventory;
+    private $product;
 
     /**
      * construct
      */
-    public function __construct(InventoryRepository $inventory)
+    public function __construct(InventoryRepository $inventory,ProductRepository $product)
     {
         parent::__construct();
 
         $this->model = trans('app.model.inventory');
 
         $this->inventory = $inventory;
+        $this->product = $product;
     }
 
     /**
@@ -120,7 +123,6 @@ class InventoryController extends Controller
      */
     public function store(CreateInventoryRequest $request)
     {
-        // dd($request); 
       
         $this->authorize('create', \App\Inventory::class); // Check permission
 
@@ -172,11 +174,17 @@ class InventoryController extends Controller
         Session::put('invoiceId',$id);
         $inventory = $this->inventory->find($id);
         $product = $this->inventory->findProduct($inventory->product_id);
-      
+        $products = $this->product->productByShop();
+        $category = $this->inventory->customiseCategory();
         $preview = $inventory->previewImages();
         $attributesCustom = $this->inventory->getAllAttribute(2);
+        $inventoryArray =  [];
+        foreach($inventory->inventoryProduct as $inve){
+            $inventoryArray[] = $inve->product_id;
+        }
 
-        return view('admin.inventory.edit', compact('inventory', 'product','attributesCustom' ,'preview'));
+
+        return view('admin.inventory.edit', compact('inventory', 'product','products','attributesCustom' ,'preview','category','inventoryArray'));
     }
 
     /**
@@ -203,6 +211,7 @@ class InventoryController extends Controller
      */
     public function update(UpdateInventoryRequest $request, $id)
     {
+        // dd($request->all());
         // return $request->textile;
         $inventory = $this->inventory->update($request, $id);
 
@@ -377,9 +386,9 @@ class InventoryController extends Controller
     }
 
     public function getAttributeValue(Request $request){
-    
-        $attributeCategory = $this->inventory->findProduct($request->product_id);
-        $attribute = [];
+        $attributeCategory = $this->inventory->inventoryCategory($request->inventory_id);
+
+        $attribute = [];    
         $attributeValue = [];     
         foreach($request->attributeId as $attributeId){
             $array = explode(",",$attributeId);

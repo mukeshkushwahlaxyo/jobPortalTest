@@ -79,7 +79,8 @@ class Product extends BaseModel
                         // 'meta_title',
                         // 'meta_description',
                         'sale_count',
-                        'active'
+                        'active',
+                        'social_media'
                     ];
 
     /**

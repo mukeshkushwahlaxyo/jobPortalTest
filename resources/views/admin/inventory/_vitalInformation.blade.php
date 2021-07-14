@@ -2,10 +2,19 @@
       {{-- @csrf --}}
       {{-- {{dd($inventory)}} --}}
   	 <div class="row " style="margin-top: 31px;" >
-        <div class="col-md-10">
+        <div class="col-md-6">
           <div class="form-group">
             {!! Form::label('title', trans('app.form.title').'*') !!}
             {!! Form::text('title', isset($inventory) ? $inventory->title:  null, ['class' => $title_classes, 'placeholder' => trans('app.placeholder.title'), 'required']) !!}
+            <div class="help-block with-errors"></div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            {!! Form::label('sku', trans('app.form.sku').'*', ['class' => 'with-help']) !!}
+            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sku') }}"></i>
+            {!! Form::text('sku', isset($inventory) ?  $inventory->sku :  null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.sku'), 'required']) !!}
             <div class="help-block with-errors"></div>
           </div>
         </div>
@@ -20,16 +29,36 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6">
+        @if($product->isCustomise === '1' || $product->isCustomise === 'on')
+        <div class="col-md-6 category">
           <div class="form-group">
-            {!! Form::label('sku', trans('app.form.sku').'*', ['class' => 'with-help']) !!}
+            {!! Form::label('Product Category', trans('Product Category').'*', ['class' => 'with-help']) !!}
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sku') }}"></i>
-            {!! Form::text('sku', isset($inventory) ?  $inventory->sku :  null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.sku'), 'required']) !!}
+            <select class="form-control select2-normal" id="isgroup" name="category_id" required>
+              <option>Select..</option>
+              @foreach($category as $Category)              
+                <option {{isset($inventory) ? $inventory->category_id  === $Category->id ? 'selected=selected': '' :'' }} data-status="{{$Category->is_group}}" id="isgroup-{{$Category->id}}" value="{{$Category->id}}">{{$Category->name}}</option>
+              @endforeach  
+            </select>
+            <div class="help-block with-errors"></div>
+          </div>
+        </div>
+        @endif
+
+        <div class="col-md-4 productList hidden">
+          <div class="form-group">
+            {!! Form::label('Products', trans('Products').'*', ['class' => 'with-help']) !!}
+            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sku') }}"></i>
+            <select class="form-control select2-normal" name="products_id[]" multiple required>
+              @foreach($products as $ProductsList)
+                <option {{isset($inventory) ? in_array($ProductsList->id, $inventoryArray) ? 'selected=selected' :'':''}} value="{{$ProductsList->id}}">{{$ProductsList->name}}</option>
+              @endforeach  
+            </select>
             <div class="help-block with-errors"></div>
           </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 Textile">
           <div class="form-group">
             {!! Form::label('Textile', trans('Textile').'*', ['class' => 'with-help']) !!}
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.sku') }}"></i>

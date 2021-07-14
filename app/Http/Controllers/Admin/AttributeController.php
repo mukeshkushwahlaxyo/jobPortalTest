@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Attribute\AttributeRepository;
 use App\Http\Requests\Validations\CreateAttributeRequest;
 use App\Http\Requests\Validations\UpdateAttributeRequest;
+use App\Category;
+use App\Attribute;
 
 class AttributeController extends Controller
 {
@@ -116,10 +118,13 @@ class AttributeController extends Controller
     public function update(UpdateAttributeRequest $request, $id)
     {
         $data = $request->all();
-        $sublist_items = $data['sublist_items'];
         $this->attribute->update($request, $id);
         $this->attribute->deleteSublistForAttribute($id);
-        $this->attribute->saveDataOfSublist($sublist_items,$id);
+        if($request->sublist_items){
+            $sublist_items = $data['sublist_items'];
+            $this->attribute->saveDataOfSublist($sublist_items,$id);    
+        }
+        
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }
@@ -250,5 +255,16 @@ class AttributeController extends Controller
            <option <?php if($selected == $List->id){ echo 'selected="selected"'; } ?> class="attribute_type_id_opt" data-name="<?php echo $List->type; ?>" value="<?php echo $List->id; ?>"><?php echo $List->type; ?></option> 
         <?php 
         }
+    }
+
+    public function getCategoryByAttribute($attrID,$selected=''){
+        $type = Attribute::find($attrID);
+        $cate = Category::where('type',$type->product_type)->get(); ?>
+        <option>Select...</option>
+        <?php foreach($cate as $Category){ ?>
+            <option <?php echo $selected === $Category->id ? 'selected=selected':''; ?> value=<?php echo $Category->id; ?> ><?php echo $Category->name; ?></option>
+
+        <?php }
+        
     }
 }

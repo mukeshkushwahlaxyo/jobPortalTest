@@ -16,3 +16,9 @@
 	Route::get('/theme/trendingNow', 'ThemeOptionController@editTrendingNow')->name('trendingNow');
 	Route::put('/theme/update/trendingNow', 'ThemeOptionController@updateTrendingNow')->name('update.trendingNow');
 
+	//Suit Wear
+	Route::get('/theme/edit_designer_home/{id}', 'ThemeOptionController@EditDesignerHome')->name('EditDesignerHome');
+	Route::get('/theme/EditDesignerOption/{id}', 'ThemeOptionController@EditDesignerOption')->name('EditDesignerOption');
+	Route::put('/theme/update_designer_home/{id}', 'ThemeOptionController@UpdateDesignerHome')->name('UpdateDesignerHome');
+	Route::put('/theme/update_designer_option/{id}', 'ThemeOptionController@UpdateDesignerOption')->name('UpdateDesignerOption');
+

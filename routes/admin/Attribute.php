@@ -9,3 +9,5 @@ Route::post('attribute/reorder', 'AttributeController@reorder')->name('attribute
 Route::get('attribute/getAttributeById/{id}/{selected?}','AttributeController@getAttributeTypeByProductId')->name('attribute.getAttributeType');
 Route::post('attribute/removeSublist/','AttributeController@removeSublist')->name('attribute.removeSublist');
 Route::resource('attribute', 'AttributeController', ['except' => ['show']]);
+
+Route::get('attribute/getCategoryByAttribute/{type}/{selected?}', 'AttributeController@getCategoryByAttribute')->name('getCategoryByAttribute');

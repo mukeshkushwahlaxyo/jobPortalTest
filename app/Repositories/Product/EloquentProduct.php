@@ -27,6 +27,11 @@ class EloquentProduct extends EloquentRepository implements BaseRepository, Prod
         return $this->model->mine()->with('categories', 'featuredImage', 'image')->withCount('inventories')->get();
 	}
 
+    public function productByShop(){
+        $shopId = Auth::user()->shop_id;
+        return $this->model->where('shop_id',$shopId)->get();
+    }
+
 	public function trashOnly()
 	{
         if (Auth::user()->isFromPlatform()) {

@@ -164,8 +164,9 @@
 					node.fileinput('upload').fileinput('disable');
 				}
 				else {
+					location.reload()
 					// debugger
-					window.location.href = result.redirect==='false' ? window.location.href:result.redirect;
+					// window.location.href = result.redirect==='false' ? window.location.href:result.redirect;
 				}
 			})
 			.fail(function(xhr){

@@ -899,6 +899,15 @@ class ListHelper
         return [];
     }
 
+    public static function get_suit_wear()
+    {
+        if ($featured_brands = get_from_option_table('suit_wear12', [])){
+            return Manufacturer::whereIn('id', $featured_brands)->get();
+        }
+
+        return [];
+    }
+
     /**
      * Get latest_products list
      *

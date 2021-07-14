@@ -4,7 +4,8 @@
 
 Route::group(['namespace' => 'Api'], function(){
 	Route::get('sliders', 'HomeController@sliders');
-	Route::get('banners', 'HomeController@banners');
+	Route::get('banners/{type}', 'HomeController@banners');
+	Route::get('themeOption/{type}', 'HomeController@themeOption');
 	Route::get('category-grps', 'CategoryController@categoryGroup');
 	Route::get('category-subgrps/{group?}', 'CategoryController@categorySubGroup');
 	Route::get('categories/{sub_group?}', 'CategoryController@index');
@@ -44,6 +45,14 @@ Route::group(['namespace' => 'Api'], function(){
 	Route::post('cart/{cart}/shipTo', 'CartController@shipTo');	
 	Route::post('cart/{cart}/shipping', 'CartController@shipping');
 	Route::post('/{cart}/checkout/', 'CheckoutController@checkout');
+
+	//Explore
+	Route::get('/post/', 'ExploreController@getPost');
+	Route::post('/like/', 'ExploreController@like');
+	Route::post('/follow/', 'ExploreController@follow');
+	Route::post('/comment/', 'ExploreController@comment');
+	Route::get('/deleteComment/{id}', 'ExploreController@deleteComment');
+	Route::post('/customerReview/', 'ExploreController@customerReview');
 
 	// Route::get('cart/{expressId?}', 'CartController@index')->name('cart.index');
 	// Route::get('checkout/{slug}', 'CheckoutController@directCheckout');

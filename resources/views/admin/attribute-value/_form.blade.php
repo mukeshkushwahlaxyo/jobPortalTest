@@ -1,24 +1,23 @@
 <div class="form-group">
-  {!! Form::label('attribute_id', trans('CATEGORY').'*', ['class' => 'with-help']) !!}
-  <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('catagory') }}"></i>
-  <select name='category_id' class="form-control select2-normal" placeholder="Select" required>
-  	<option></option>
-  	@foreach($category as $Category)
-  		<option {{isset($attributeValue) ? $attributeValue->category_id === $Category->id ? 'selected=selected':'' :''}} value={{$Category->id}}>{{$Category->name}}</option>
-  	@endforeach	
-  </select>
- 
-  <div class="help-block with-errors"></div>
-</div>
-
-<div class="form-group">
   {!! Form::label('attribute_id', trans('app.form.attribute').'*', ['class' => 'with-help']) !!}
   <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('catagory') }}"></i>
   <select name='attribute_id' class="form-control select2-normal attribute_id" placeholder="Select" required>
   	<option></option>
   	@foreach($attribute as $key => $Attribute)
-  		<option   {{isset($attributeValue) ? $attributeValue->attribute_id === $Attribute->id ? 'selected=selected':'' :''}} value="{{$Attribute->id}}">{{$Attribute->name}}</option>
+  		<option  data-{{$Attribute->id}}="{{isset($Attribute) ? $Attribute->productType->name:''}}"  {{isset($attributeValue) ? $attributeValue->attribute_id === $Attribute->id ? 'selected=selected':'' :''}} value="{{$Attribute->id}}">{{$Attribute->name}}</option>
   	@endforeach	
+  </select>
+ 
+  <div class="help-block with-errors"></div>
+</div>
+<div class="form-group hidden categoryField">
+  {!! Form::label('category_id', trans('CATEGORY').'*', ['class' => 'with-help']) !!}
+  <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('catagory') }}"></i>
+  <i style="position: inherit;" class="fa-li fa fa-spinner fa-spin text-danger hidden"></i>
+  <select name='category_id' id="category_id_attr" class="form-control select2-normal " placeholder="Select" required>
+  	@foreach($category as $key => $Category)
+  		<option   {{isset($attributeValue) ? $attributeValue->category_id === $Category->id ? 'selected=selected':'' :''}} value="{{$Category->id}}">{{$Category->name}}</option>
+  	@endforeach
   </select>
  
   <div class="help-block with-errors"></div>
@@ -202,6 +201,8 @@
 		              $('#attribute_sublist_id').html(html)
 		              $('.sublist_container').removeClass('hidden')
 		              $('.sublist_container').addClass('show')
+		              $('.categoryField').removeClass('hidden') 	
+		              $('.categoryField').addClass('show') 	
 		            }
 		            else{
 		            	$('.sublist_container').removeClass('show')
@@ -240,7 +241,9 @@
     
   $(document).on('change','.attribute_id',function(){
       var selected = $(this).val()
+      alert(selected)
       if(selected === '1'){
+      	alert('sddsdd')
       	$('#color-option').removeClass('hidden')
       	$('.imageUpload').removeClass('hidden')
         $('#color-option').addClass('show') 	
@@ -249,8 +252,10 @@
       else{
         	$('#color-option').removeClass('show')
         	$('.imageUpload').removeClass('show')
+        	$('.categoryField').removeClass('show')
           $('#color-option').addClass('hidden')
           $('.imageUpload').addClass('hidden')
+          $('.categoryField').addClass('hidden')
         }
       var id = $(this).val()
       getSublist(id)

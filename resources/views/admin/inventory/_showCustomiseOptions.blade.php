@@ -2,7 +2,6 @@
 	{{-- <div class="row">    --}}
       <div class="col-sm-12 col-md-12">       
         <ul class="nav nav-tabs mb-4" >
-        	{{-- {{dd($attribute)}} --}}
         @php  $count = 1 ; @endphp
         @foreach($attribute as $Attribute)
         	@if(count($Attribute))
@@ -35,7 +34,9 @@
 				  				$selectedCategory = getCategoryTabs($categoryAttr->attribute_id,$sublistId);
 			  				@endphp
   					    <div class="col-md-12 attrVallContainer {{$Catcount}} {{$Catcount === 1 ? '' : 'hidden'}}" style="padding-top: 20px;">
-						    @foreach($attributeCategory->categories as $secondKey => $Cate)
+
+						    @foreach($attributeCategory->category as $secondKey => $Cate)
+	
 					    		<span style=" margin-left: 20px; display: 'inline';"> 
 						    		<input {{in_array($Cate->id, $selectedCategory) ? 'checked':''}} class="getValuesOfCate" 
 						    					data-id="{{$categoryAttr->attribute_id}}{{$categoryAttr->attribute_sublist_id === null ? '':$categoryAttr->attribute_sublist_id}}{{$Cate->id}}"
@@ -47,6 +48,7 @@
 						    					id="category_{{$categoryAttr->attribute_id}}{{$categoryAttr->attribute_sublist_id === null ? '':$categoryAttr->attribute_sublist_id}}{{$Cate->id}}">
 						    					{{$Cate->name}}
 						    		</span>		   		
+						    
 				    		@endforeach		
 			    			</div>
 				    	@endforeach	
@@ -59,7 +61,7 @@
     @endphp	
     @foreach($attribute as $Attribute)		
 	    @foreach($Attribute as $secondKey => $attr)		
-	    	@foreach($attributeCategory->categories as $secondKey =>$Category )		
+	    	@foreach($attributeCategory->category as $secondKey =>$Category )		
 		   		<div id="val_{{$attr->attribute_id}}{{$attr->attribute_sublist_id === null ? '':$attr->attribute_sublist_id}}{{$Category->id}}" class="col-md-12 showAttributeValuesOfCategory {{$valCount}} attrVallContainer">
 		   		</div> 					
 		  	@endforeach		
